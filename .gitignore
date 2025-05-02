@@ -1,0 +1,50 @@
+## Ignore Visual Studio temporary files, build results, and
+## package files.
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.dotsettings
+*.sln.dotsettings.user
+
+# ASP.NET Core files
+bin/
+obj/
+*.pdb
+*.mdb
+*.log
+
+# Dependency directories
+packages/
+node_modules/
+bower_components/
+
+# .NET Core build files
+project.lock.json
+project.fragment.lock.json
+*.nuget.props
+*.nuget.targets
+
+# Local development settings
+appsettings.Development.json
+
+# Logs
+logs/
+*.log
+
+# Visual Studio Code settings
+.vscode/
+
+# Rider IDE settings
+.idea/
+
+# Dotnet tool settings
+.dotnet_tool/
+
+# Docker files
+**/.dockerignore
+**/Dockerfile
+
+# Generated files
+Generated/
