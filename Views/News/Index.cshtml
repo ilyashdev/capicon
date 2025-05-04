@@ -1,0 +1,13 @@
+@using Models
+@model List<PostModel>
+@{
+    ViewData["Title"] = "News";
+}
+
+<div class="text-center">
+    <h1 class="display-4">News</h1>
+    @foreach(PostModel News in Model)
+{
+    <li><a href="post/@News.Id">@News.Title</a></li>
+}
+</div>

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using capicon.Models;
 
 namespace DataAccess;
 
@@ -12,6 +13,8 @@ public class CSDbContext : IdentityDbContext
     {
         _configuration = configuration;
     }
+
+    public DbSet<PostModel> News { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
