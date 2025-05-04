@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace capicon.Migrations
 {
     [DbContext(typeof(CSDbContext))]
-    [Migration("20250504171754_FixIdentityModel")]
-    partial class FixIdentityModel
+    [Migration("20250504173505_GitSpecialMigration")]
+    partial class GitSpecialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
