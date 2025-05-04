@@ -4,15 +4,14 @@
 }
 
 <h2>@ViewData["Title"]</h2>
-
+<h3>Всего пользователей: @ViewBag.UserCount</h3>
 <a asp-action="AddUser" class="btn btn-success mb-3">Добавить пользователя</a>
-
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>Email</th>
-            <th>Имя</th>
-            <th>Роли</th>
+            <th>Логин</th>
+            <th>Роль</th>
             <th>Действия</th>
         </tr>
     </thead>

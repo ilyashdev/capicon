@@ -7,9 +7,11 @@ public class AccountService
 {
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly SignInManager<IdentityUser> _signInManager;
 
-    public AccountService(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+    public AccountService(RoleManager<IdentityRole> roleManager, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
     {
+        _signInManager = signInManager;
         _roleManager = roleManager;
         _userManager = userManager;
     }
@@ -102,5 +104,19 @@ public class AccountService
             await _userManager.AddToRoleAsync(user, model.Role);
 
         return IdentityResult.Success;
+    }
+
+    public async Task<bool> SignInAsync(string email, string password)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null) return false;
+
+        var result = await _signInManager.PasswordSignInAsync(user.UserName!, password, false, false);
+        return result.Succeeded;
+    }
+
+    public async Task SignOutAsync()
+    {
+        await _signInManager.SignOutAsync();
     }
 }

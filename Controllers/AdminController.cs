@@ -6,7 +6,7 @@ using capicon.Services;
 
 namespace capicon.Controllers;
 
-// [Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin")]
 public class AdminController : Controller
 {
     private readonly ILogger<AdminController> _logger;
@@ -18,23 +18,30 @@ public class AdminController : Controller
         _logger = logger;
     }
 
-    [HttpGet]
-    
+    [HttpGet("/admin")]
+    public IActionResult Index()
+    {
+        return View();
+    }
+
+    [HttpGet("/admin/users")]
     public async Task<IActionResult> Users()
     {
+        var usersCount = await _accountService.GetAllUsersAsync();
+        ViewBag.UserCount = usersCount.Count;
         var users = await _accountService.GetAllUsersAsync();
         return View(users);
     }
 
-    [HttpGet]
-    
+    [HttpGet("/admin/users/add")]
+
     public IActionResult AddUser()
     {
         ViewBag.Roles = _accountService.GetAllRoles();
         return View();
     }
 
-    [HttpPost]
+    [HttpPost("/admin/users/add")]
     
     public async Task<IActionResult> AddUser(CreateUserModel model)
     {
@@ -57,7 +64,7 @@ public class AdminController : Controller
         return RedirectToAction(nameof(Users));
     }
 
-    
+    [HttpGet("/admin/users/edit")]
     public async Task<IActionResult> EditUser(string id)
     {
         var user = await _accountService.GetUserByIdAsync(id);
@@ -76,7 +83,7 @@ public class AdminController : Controller
         return View(model);
     }
 
-    [HttpPost]
+    [HttpPost("/admin/users/edit")]
     
     public async Task<IActionResult> EditUser(ModifyUserModel model)
     {
@@ -98,7 +105,7 @@ public class AdminController : Controller
 
         return RedirectToAction(nameof(Users));
     }
-    [HttpPost]
+    [HttpPost("/admin/users/delete")]
 
     public async Task<IActionResult> DeleteUser(string id)
     {
@@ -112,7 +119,7 @@ public class AdminController : Controller
     }
 
 
-    [HttpGet]
+    [HttpGet("/admin/users/details")]
     public async Task<IActionResult> UserDetails(string id)
     {
         var user = await _accountService.GetUserByIdAsync(id);
