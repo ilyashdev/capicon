@@ -1,4 +1,6 @@
+using capicon.Models;
 using DataAccess;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +9,17 @@ builder.Services.AddControllersWithViews();
 var services = builder.Services;
 
 services.AddDbContext<CSDbContext>();
+services.AddScoped<IAccountService, AccountService>();
+
+builder.Services.AddIdentity<User, UserRole>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+})
+.AddEntityFrameworkStores<CSDbContext>()
+.AddDefaultTokenProviders();
 
 var app = builder.Build();
 

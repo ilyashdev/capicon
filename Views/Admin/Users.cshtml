@@ -1,0 +1,43 @@
+@model IEnumerable<User>
+@{
+    ViewData["Title"] = "Пользователи";
+}
+
+<h2>Пользователи</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<a class="btn btn-success mb-3" asp-action="AddUser">Добавить пользователя</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Логин</th>
+            <th>Email</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.UserName</td>
+            <td>@user.Email</td>
+            <td>
+                <a asp-action="ModifyUser" asp-route-userId="@user.Id" class="btn btn-primary btn-sm">Изменить</a>
+                <form asp-action="RemoveUser" method="post" style="display:inline;">
+                    <input type="hidden" name="userId" value="@user.Id" />
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Удалить пользователя?')">Удалить</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
