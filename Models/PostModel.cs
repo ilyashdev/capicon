@@ -1,4 +1,4 @@
-namespace Models;
+namespace capicon.Models;
 public class PostModel
 {
     public int Id { get; set; }
