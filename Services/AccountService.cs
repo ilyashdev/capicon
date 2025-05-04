@@ -14,15 +14,15 @@ public class AccountService
         _userManager = userManager;
     }
 
-    public async Task<List<UserViewModel>> GetAllUsersAsync()
+    public async Task<List<UserShowModel>> GetAllUsersAsync()
     {
         var users = _userManager.Users.ToList();
-        var result = new List<UserViewModel>();
+        var result = new List<UserShowModel>();
 
         foreach (var user in users)
         {
             var roles = await _userManager.GetRolesAsync(user);
-            result.Add(new UserViewModel
+            result.Add(new UserShowModel
             {
                 Id = user.Id,
                 Email = user.Email!,
@@ -39,14 +39,14 @@ public class AccountService
         return _roleManager.Roles.Select(r => r.Name).ToList()!;
     }
 
-    public async Task<UserViewModel?> GetUserByIdAsync(string id)
+    public async Task<UserShowModel?> GetUserByIdAsync(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         if (user == null) return null;
 
         var roles = await _userManager.GetRolesAsync(user);
 
-        return new UserViewModel
+        return new UserShowModel
         {
             Id = user.Id,
             Email = user.Email!,

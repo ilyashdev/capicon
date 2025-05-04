@@ -18,8 +18,8 @@ public class AdminController : Controller
         _logger = logger;
     }
 
-
     [HttpGet]
+    
     public async Task<IActionResult> Users()
     {
         var users = await _accountService.GetAllUsersAsync();
@@ -27,7 +27,7 @@ public class AdminController : Controller
     }
 
     [HttpGet]
-   
+    
     public IActionResult AddUser()
     {
         ViewBag.Roles = _accountService.GetAllRoles();
@@ -35,7 +35,7 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-   
+    
     public async Task<IActionResult> AddUser(CreateUserModel model)
     {
         if (!ModelState.IsValid)
@@ -57,8 +57,7 @@ public class AdminController : Controller
         return RedirectToAction(nameof(Users));
     }
 
-    [HttpGet]
-   
+    
     public async Task<IActionResult> EditUser(string id)
     {
         var user = await _accountService.GetUserByIdAsync(id);
@@ -78,7 +77,7 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-   
+    
     public async Task<IActionResult> EditUser(ModifyUserModel model)
     {
         if (!ModelState.IsValid)
@@ -99,9 +98,8 @@ public class AdminController : Controller
 
         return RedirectToAction(nameof(Users));
     }
-
     [HttpPost]
-   
+
     public async Task<IActionResult> DeleteUser(string id)
     {
         var result = await _accountService.RemoveUserAsync(id);
@@ -113,8 +111,8 @@ public class AdminController : Controller
         return RedirectToAction(nameof(Users));
     }
 
+
     [HttpGet]
-   
     public async Task<IActionResult> UserDetails(string id)
     {
         var user = await _accountService.GetUserByIdAsync(id);
@@ -123,6 +121,5 @@ public class AdminController : Controller
 
         return View(user);
     }
-
 
 }
