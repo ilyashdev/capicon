@@ -1,11 +1,13 @@
-@model CreateUserModel
+@model ModifyUserModel
 @{
-    ViewData["Title"] = "Добавить пользователя";
+    ViewData["Title"] = "Редактировать пользователя";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<form asp-action="AddUser" method="post">
+<form asp-action="EditUser" method="post">
+    <input type="hidden" asp-for="Id" />
+
     <div class="mb-3">
         <label asp-for="Email" class="form-label">Email</label>
         <input asp-for="Email" class="form-control" />
@@ -19,19 +21,13 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="Password" class="form-label">Пароль</label>
-        <input asp-for="Password" class="form-control" type="password" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
         <label asp-for="Role" class="form-label">Роль</label>
         <select asp-for="Role" asp-items="new SelectList(ViewBag.Roles)" class="form-select"></select>
         <span asp-validation-for="Role" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Создать</button>
-    <a asp-action="Users" class="btn btn-secondary">Назад</a>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a asp-action="Users" class="btn btn-secondary">Отмена</a>
 </form>
 
 @section Scripts {

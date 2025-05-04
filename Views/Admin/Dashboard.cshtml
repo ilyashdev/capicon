@@ -1,0 +1,29 @@
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+
+@{
+    ViewData["Title"] = "Панель";
+    var userName = User.Identity!.Name;
+    var roles = string.Join(", ", User.Claims
+        .Where(c => c.Type == ClaimTypes.Role)
+        .Select(c => c.Value));
+}
+
+<h2>Панель управления</h2>
+
+<p>Привет, @userName!</p>
+
+<p>Роль: @roles</p>
+
+@if (User.IsInRole("Admin"))
+{
+    <p><strong>Admin access granted.</strong></p>
+}
+@if (User.IsInRole("Moderator"))
+{
+    <p><strong>Moderator panel enabled.</strong></p>
+}
+@if (User.IsInRole("Stats"))
+{
+    <p><strong>Statistics tools available.</strong></p>
+}

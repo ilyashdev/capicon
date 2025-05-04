@@ -1,0 +1,16 @@
+@model UserViewModel
+@{
+    ViewData["Title"] = "Информация о пользователе";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="card">
+    <div class="card-body">
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Имя пользователя:</strong> @Model.UserName</p>
+        <p><strong>Роли:</strong> @string.Join(", ", Model.Roles)</p>
+    </div>
+</div>
+
+<a asp-action="Users" class="btn btn-secondary mt-3">Назад</a>

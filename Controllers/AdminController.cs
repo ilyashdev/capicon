@@ -1,111 +1,128 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using capicon.Models;
+using Microsoft.AspNetCore.Authorization;
+using capicon.Services;
 
+namespace capicon.Controllers;
+
+// [Authorize(Roles = "Admin")]
 public class AdminController : Controller
 {
     private readonly ILogger<AdminController> _logger;
-    private readonly IAccountService _accountService;
+    private readonly AccountService _accountService;
 
-    public AdminController(
-        ILogger<AdminController> logger,
-        IAccountService accountService)
+    public AdminController(AccountService accountService, ILogger<AdminController> logger)
     {
-        _logger = logger;
         _accountService = accountService;
+        _logger = logger;
     }
 
+
     [HttpGet]
-    public IActionResult Users()
+    public async Task<IActionResult> Users()
     {
-        var users = _accountService.GetAllUsers();
+        var users = await _accountService.GetAllUsersAsync();
         return View(users);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> RemoveUser(string userId)
-    {
-        var (success, errors) = await _accountService.DeleteUserAsync(userId);
-        if (success)
-        {
-            TempData["Success"] = "Пользователь удалён.";
-        }
-        else
-        {
-            TempData["Error"] = string.Join("; ", errors);
-        }
-        return RedirectToAction("Users");
-    }
-
     [HttpGet]
+   
     public IActionResult AddUser()
     {
-        ViewBag.Roles = new SelectList(new[] { "Admin", "Editor", "Stats" });
-        return View(new AddUserModel());
+        ViewBag.Roles = _accountService.GetAllRoles();
+        return View();
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddUser(AddUserModel model)
+   
+    public async Task<IActionResult> AddUser(CreateUserModel model)
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Roles = _accountService.GetAllRolesAsync();
+            ViewBag.Roles = _accountService.GetAllRoles();
             return View(model);
         }
 
-        var (success, errors) = await _accountService.RegisterUserAsync(model);
-
-        if (success)
+        var result = await _accountService.AddUserAsync(model);
+        if (!result.Succeeded)
         {
-            TempData["Success"] = "Пользователь добавлен.";
-            return RedirectToAction("Users");
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+
+            ViewBag.Roles = _accountService.GetAllRoles();
+            return View(model);
         }
 
-        foreach (var error in errors)
-            ModelState.AddModelError("", error);
-
-        ViewBag.Roles = new SelectList(new[] { "Admin", "Editor", "Stats" });
-        return View(model);
+        return RedirectToAction(nameof(Users));
     }
 
     [HttpGet]
-    public async Task<IActionResult> ModifyUser(string userId)
+   
+    public async Task<IActionResult> EditUser(string id)
     {
-        var user = await _accountService.GetUserByIdAsync(userId);
+        var user = await _accountService.GetUserByIdAsync(id);
         if (user == null)
             return NotFound();
 
-        var roles = await _accountService.GetRolesAsync(user);
         var model = new ModifyUserModel
         {
-            UserLogin = user.UserName!,
-            Email = user.Email!,
-            UserRole = roles.FirstOrDefault() ?? "",
+            Id = user.Id,
+            Email = user.Email,
+            UserName = user.UserName,
+            Role = user.Roles.FirstOrDefault() ?? ""
         };
 
-        ViewBag.Roles = new SelectList(new[] { "Admin", "Editor", "Stats" });
+        ViewBag.Roles = _accountService.GetAllRoles();
         return View(model);
     }
 
     [HttpPost]
-    public async Task<IActionResult> ModifyUser(ModifyUserModel model)
+   
+    public async Task<IActionResult> EditUser(ModifyUserModel model)
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Roles = new SelectList(new[] { "Admin", "Editor", "Stats" });
+            ViewBag.Roles = _accountService.GetAllRoles();
             return View(model);
         }
 
-        var (success, errors) = await _accountService.UpdateUserAsync(model);
-        if (success)
+        var result = await _accountService.ModifyUserAsync(model);
+        if (!result.Succeeded)
         {
-            TempData["Success"] = "Пользователь обновлён.";
-            return RedirectToAction("Users");
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+
+            ViewBag.Roles = _accountService.GetAllRoles();
+            return View(model);
         }
 
-        foreach (var error in errors)
-            ModelState.AddModelError("", error);
-
-        ViewBag.Roles = new SelectList(new[] { "Admin", "Editor", "Stats" });
-        return View(model);
+        return RedirectToAction(nameof(Users));
     }
+
+    [HttpPost]
+   
+    public async Task<IActionResult> DeleteUser(string id)
+    {
+        var result = await _accountService.RemoveUserAsync(id);
+        if (!result.Succeeded)
+        {
+            TempData["Error"] = "Ошибка при удалении пользователя.";
+        }
+
+        return RedirectToAction(nameof(Users));
+    }
+
+    [HttpGet]
+   
+    public async Task<IActionResult> UserDetails(string id)
+    {
+        var user = await _accountService.GetUserByIdAsync(id);
+        if (user == null)
+            return NotFound();
+
+        return View(user);
+    }
+
+
 }

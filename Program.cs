@@ -1,33 +1,51 @@
-using capicon.Models;
+using capicon.Services;
 using DataAccess;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
 var services = builder.Services;
+services.AddControllersWithViews();
 
-services.AddDbContext<CSDbContext>();
-services.AddScoped<IAccountService, AccountService>();
+services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<CSDbContext>()
+    .AddDefaultTokenProviders();
 
-builder.Services.AddIdentity<User, UserRole>(options =>
-{
-    options.Password.RequireDigit = false;
-    options.Password.RequiredLength = 6;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-})
-.AddEntityFrameworkStores<CSDbContext>()
-.AddDefaultTokenProviders();
+services.AddDbContext<CSDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DataBase")));
+services.AddScoped<AccountService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    
+    var roleNames = new[] { "Admin", "Editor", "Analytics" };
+
+    foreach (var roleName in roleNames)
+    {
+        var roleExist = await roleManager.RoleExistsAsync(roleName);
+        if (!roleExist)
+        {
+            var role = new IdentityRole(roleName);
+            await roleManager.CreateAsync(role);
+        }
+    }
+
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    var user = await userManager.FindByEmailAsync("admin@example.com");
+    if (user != null && !(await userManager.IsInRoleAsync(user, "Admin")))
+    {
+        await userManager.AddToRoleAsync(user, "Admin");
+    }
+}
+
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
