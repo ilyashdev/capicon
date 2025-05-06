@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace capicon.Migrations
 {
     /// <inheritdoc />
-    public partial class GitSpecialMigration : Migration
+    public partial class DevelMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,6 +49,21 @@ namespace capicon.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "News",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    dateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    MdText = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_News", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -212,6 +227,9 @@ namespace capicon.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "News");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
