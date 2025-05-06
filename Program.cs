@@ -8,10 +8,14 @@ var services = builder.Services;
 
 services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/login";
+    options.LoginPath = "/Admin/Login";
 });
 
-services.AddControllersWithViews();
+services.AddControllersWithViews()
+    .AddRazorOptions(options =>
+    {
+        options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
+    });
 
 services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<CSDbContext>()
@@ -42,9 +46,7 @@ using (var scope = app.Services.CreateScope())
                 await roleManager.CreateAsync(new IdentityRole(roleName));
         }
 
-        var adminPass = "Admin123!";
-
-        // Создание администратора
+        var password = "Admin123!";
         var admin = new IdentityUser
         {
             UserName = "admin",
@@ -52,12 +54,13 @@ using (var scope = app.Services.CreateScope())
             EmailConfirmed = true
         };
 
-        var result = await userManager.CreateAsync(admin, adminPass);
+        var result = await userManager.CreateAsync(admin, password);
+
 
         if (result.Succeeded)
         {
             await userManager.AddToRoleAsync(admin, "Admin");
-            Console.WriteLine($"Админ создан: {admin.UserName}/{admin.Email}/{adminPass}");
+            Console.WriteLine($"Админ создан: {admin.UserName}/{admin.Email}/{password}");
         }
         else
         {
@@ -81,9 +84,14 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
+app.MapAreaControllerRoute(
+    name: "admin",
+    areaName: "Admin",
+    pattern: "Admin/{controller=Home}/{action=Index}/{id?}"
+);
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

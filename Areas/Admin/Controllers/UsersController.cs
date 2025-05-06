@@ -1,31 +1,26 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using capicon.Models;
 using Microsoft.AspNetCore.Authorization;
 using capicon.Services;
 
-namespace capicon.Controllers;
+using capicon.Areas.Admin.Models;
+namespace capicon.Areas.Admin.Controllers;
 
+[Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class AdminController : Controller
+public class UsersController : Controller
 {
-    private readonly ILogger<AdminController> _logger;
+    private readonly ILogger<HomeController> _logger;
     private readonly AccountService _accountService;
 
-    public AdminController(AccountService accountService, ILogger<AdminController> logger)
+    public UsersController(AccountService accountService, ILogger<HomeController> logger)
     {
         _accountService = accountService;
         _logger = logger;
     }
 
-    [HttpGet("/admin")]
-    public IActionResult Index()
-    {
-        return View();
-    }
-
-    [HttpGet("/admin/users")]
-    public async Task<IActionResult> Users()
+    [HttpGet]
+    public async Task<IActionResult> Index()
     {
         var usersCount = await _accountService.GetAllUsersAsync();
         ViewBag.UserCount = usersCount.Count;
@@ -33,7 +28,7 @@ public class AdminController : Controller
         return View(users);
     }
 
-    [HttpGet("/admin/users/add")]
+    [HttpGet]
 
     public IActionResult AddUser()
     {
@@ -41,7 +36,7 @@ public class AdminController : Controller
         return View();
     }
 
-    [HttpPost("/admin/users/add")]
+    [HttpPost]
     
     public async Task<IActionResult> AddUser(CreateUserModel model)
     {
@@ -61,10 +56,10 @@ public class AdminController : Controller
             return View(model);
         }
 
-        return RedirectToAction(nameof(Users));
+        return RedirectToAction(nameof(Index));
     }
 
-    [HttpGet("/admin/users/edit")]
+    [HttpGet]
     public async Task<IActionResult> EditUser(string id)
     {
         var user = await _accountService.GetUserByIdAsync(id);
@@ -83,7 +78,7 @@ public class AdminController : Controller
         return View(model);
     }
 
-    [HttpPost("/admin/users/edit")]
+    [HttpPost]
     
     public async Task<IActionResult> EditUser(ModifyUserModel model)
     {
@@ -103,9 +98,9 @@ public class AdminController : Controller
             return View(model);
         }
 
-        return RedirectToAction(nameof(Users));
+        return RedirectToAction(nameof(Index));
     }
-    [HttpPost("/admin/users/delete")]
+    [HttpPost]
 
     public async Task<IActionResult> DeleteUser(string id)
     {
@@ -115,11 +110,11 @@ public class AdminController : Controller
             TempData["Error"] = "Ошибка при удалении пользователя.";
         }
 
-        return RedirectToAction(nameof(Users));
+        return RedirectToAction(nameof(Index));
     }
 
 
-    [HttpGet("/admin/users/details")]
+    [HttpGet]
     public async Task<IActionResult> UserDetails(string id)
     {
         var user = await _accountService.GetUserByIdAsync(id);

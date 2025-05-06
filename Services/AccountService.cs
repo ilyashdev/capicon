@@ -1,4 +1,4 @@
-using capicon.Models;
+using capicon.Areas.Admin.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace capicon.Services;

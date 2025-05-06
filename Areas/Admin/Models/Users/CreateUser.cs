@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace capicon.Models;
+namespace capicon.Areas.Admin.Models;
 public class CreateUserModel
 {
     [Required(ErrorMessage = "Обязательное поле.")]
