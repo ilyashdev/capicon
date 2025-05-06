@@ -3,11 +3,11 @@ using capicon.Services;
 
 namespace capicon.Areas.Posts.Controllers;
 
-public class PostsController : Controller
+public class PostController : Controller
 {
-    private readonly PostsService _postService;
+    private readonly PostService _postService;
 
-    public PostsController(PostsService postService)
+    public PostController(PostService postService)
     {
         _postService = postService;
     }

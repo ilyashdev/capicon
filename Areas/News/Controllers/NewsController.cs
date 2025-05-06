@@ -9,16 +9,14 @@ namespace capicon.Areas.News.Controllers;
 [Area("News")]
 public class NewsController : Controller
 {
-    private readonly ILogger<NewsController> _logger;
-    private readonly PostsService _postService;
-    public NewsController(ILogger<NewsController> logger, PostsService postService)
+    private readonly PostService _postService;
+    public NewsController(ILogger<NewsController> logger, PostService postService)
     {
-        _logger = logger;
         _postService = postService;
     }
 
     public IActionResult Index(int id)
     {
-        return View(_postService.GetPostsByOffset(id));
+        return View(_postService.GetPosts(id));
     }
 }

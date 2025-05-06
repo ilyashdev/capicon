@@ -8,12 +8,12 @@ namespace capicon.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class UsersController : Controller
+public class UserController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly AccountService _accountService;
 
-    public UsersController(AccountService accountService, ILogger<HomeController> logger)
+    public UserController(AccountService accountService, ILogger<HomeController> logger)
     {
         _accountService = accountService;
         _logger = logger;

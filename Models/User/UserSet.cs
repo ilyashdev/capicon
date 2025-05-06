@@ -17,8 +17,8 @@ namespace capicon.Models
         public string Password { get; set; } = default!;
 
         [Required(ErrorMessage = "Обязательное поле.")]
-        [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Пароли не совпадают.")]
+        [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; } = default!;
 
         [Required(ErrorMessage = "Обязательное поле.")]

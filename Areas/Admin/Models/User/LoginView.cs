@@ -15,4 +15,3 @@ public class LoginViewModel
     [Display(Name = "Запомнить меня")]
     public bool RememberMe { get; set; }
 }
-

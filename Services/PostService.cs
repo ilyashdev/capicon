@@ -3,12 +3,12 @@ using DataAccess;
 
 namespace capicon.Services;
 
-public class PostsService
+public class PostService
 {
     private readonly CSDbContext _context;
     private readonly int DIFF = 8;
     
-    public PostsService(CSDbContext context)
+    public PostService(CSDbContext context)
     {
         _context = context;
     }
@@ -18,11 +18,11 @@ public class PostsService
         return _context.News.First(n => n.Id == id);
     }
 
-    public List<PostModel> GetPostsByOffset(int id)
+    public List<PostModel> GetPosts(int idOffset = 0)
     {
         return _context.News
             .OrderBy(n => n.dateTime)
-            .Skip(id * DIFF)
+            .Skip(idOffset * DIFF)
             .Take(DIFF)
             .ToList();
     }
