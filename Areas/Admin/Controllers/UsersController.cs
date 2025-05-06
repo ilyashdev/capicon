@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using capicon.Services;
 
-using capicon.Areas.Admin.Models;
+using capicon.Models;
 namespace capicon.Areas.Admin.Controllers;
 
 [Area("Admin")]
@@ -38,7 +38,7 @@ public class UsersController : Controller
 
     [HttpPost]
     
-    public async Task<IActionResult> AddUser(CreateUserModel model)
+    public async Task<IActionResult> AddUser(UserSetFieldModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -66,7 +66,7 @@ public class UsersController : Controller
         if (user == null)
             return NotFound();
 
-        var model = new ModifyUserModel
+        var model = new UserSetFieldModel
         {
             Id = user.Id,
             Email = user.Email,
@@ -80,7 +80,7 @@ public class UsersController : Controller
 
     [HttpPost]
     
-    public async Task<IActionResult> EditUser(ModifyUserModel model)
+    public async Task<IActionResult> EditUser(UserSetFieldModel model)
     {
         if (!ModelState.IsValid)
         {

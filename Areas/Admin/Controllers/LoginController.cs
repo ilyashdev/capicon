@@ -1,6 +1,8 @@
+using capicon.Areas.Admin.Models;
 using capicon.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+
+[Area("Admin")]
 public class LoginController : Controller
 {
     private readonly AccountService _accountService;
@@ -10,13 +12,13 @@ public class LoginController : Controller
         _accountService = accountService;
     }
 
-    [HttpGet("/login")]
+    [HttpGet]
     public IActionResult Index() => View();
 
-    [HttpPost("/login")]
-    public async Task<IActionResult> Index(string email, string password)
+    [HttpPost]
+    public async Task<IActionResult> Index(LoginViewModel model)
     {
-        var success = await _accountService.SignInAsync(email, password);
+        var success = await _accountService.SignInAsync(model.Email, model.Password);
         if (success)
             return RedirectToAction("Index", "Home");
 
@@ -24,10 +26,10 @@ public class LoginController : Controller
         return View();
     }
 
-    [HttpPost("/logout")]
+    [HttpPost]
     public async Task<IActionResult> Logout()
     {
         await _accountService.SignOutAsync();
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction(nameof(Index));
     }
 }

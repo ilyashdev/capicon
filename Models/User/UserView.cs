@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace capicon.Areas.Admin.Models;
+namespace capicon.Models;
 public class UserShowModel
 {
     public string Id { get; set; } = default!;

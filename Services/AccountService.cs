@@ -1,4 +1,4 @@
-using capicon.Areas.Admin.Models;
+using capicon.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace capicon.Services;
@@ -57,12 +57,12 @@ public class AccountService
         };
     }
 
-    public async Task<IdentityResult> AddUserAsync(CreateUserModel model)
+    public async Task<IdentityResult> AddUserAsync(UserSetFieldModel model)
     {
         var user = new IdentityUser
         {
             Email = model.Email,
-            UserName = model.UserName
+            UserName = model.UserName,
         };
 
         var result = await _userManager.CreateAsync(user, model.Password);
@@ -84,7 +84,7 @@ public class AccountService
         return await _userManager.DeleteAsync(user);
     }
 
-    public async Task<IdentityResult> ModifyUserAsync(ModifyUserModel model)
+    public async Task<IdentityResult> ModifyUserAsync(UserSetFieldModel model)
     {
         var user = await _userManager.FindByIdAsync(model.Id);
         if (user == null)

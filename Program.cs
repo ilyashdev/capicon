@@ -25,6 +25,7 @@ services.AddDbContext<CSDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DataBase")));
 
 services.AddScoped<AccountService>();
+services.AddScoped<PostsService>();
 
 var app = builder.Build();
 
@@ -87,7 +88,19 @@ app.MapStaticAssets();
 app.MapAreaControllerRoute(
     name: "admin",
     areaName: "Admin",
-    pattern: "Admin/{controller=Home}/{action=Index}/{id?}"
+    pattern: "admin/{controller=Home}/{action=Index}/{id?}"
+);
+
+app.MapAreaControllerRoute(
+    name: "news",
+    areaName: "News",
+    pattern: "news/{controller=News}/{action=Index}/{id?}"
+);
+
+app.MapAreaControllerRoute(
+    name: "posts",
+    areaName: "Post",
+    pattern: "posts/{controller=Posts}/{action=Index}/{id?}"
 );
 
 app.MapControllerRoute(
