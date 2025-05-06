@@ -16,15 +16,15 @@ public class AccountService
         _userManager = userManager;
     }
 
-    public async Task<List<UserShowModel>> GetAllUsersAsync()
+    public async Task<List<UserDisplayFieldModel>> GetAllUsersAsync()
     {
         var users = _userManager.Users.ToList();
-        var result = new List<UserShowModel>();
+        var result = new List<UserDisplayFieldModel>();
 
         foreach (var user in users)
         {
             var roles = await _userManager.GetRolesAsync(user);
-            result.Add(new UserShowModel
+            result.Add(new UserDisplayFieldModel
             {
                 Id = user.Id,
                 Email = user.Email!,
@@ -41,14 +41,14 @@ public class AccountService
         return _roleManager.Roles.Select(r => r.Name).ToList()!;
     }
 
-    public async Task<UserShowModel?> GetUserByIdAsync(string id)
+    public async Task<UserDisplayFieldModel?> GetUserByIdAsync(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         if (user == null) return null;
 
         var roles = await _userManager.GetRolesAsync(user);
 
-        return new UserShowModel
+        return new UserDisplayFieldModel
         {
             Id = user.Id,
             Email = user.Email!,
@@ -86,7 +86,7 @@ public class AccountService
 
     public async Task<IdentityResult> ModifyUserAsync(UserSetFieldModel model)
     {
-        var user = await _userManager.FindByIdAsync(model.Id);
+        var user = await _userManager.FindByIdAsync(model.Id!);
         if (user == null)
             return IdentityResult.Failed(new IdentityError { Description = "User not found" });
 

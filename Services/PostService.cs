@@ -13,6 +13,11 @@ public class PostService
         _context = context;
     }
 
+    public void AddPost(PostModel model)
+    {
+        _context.News.Add(model);
+    }
+
     public PostModel GetPost(int id)
     {
         return _context.News.First(n => n.Id == id);

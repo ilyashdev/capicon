@@ -6,7 +6,11 @@
 
 <h2>@ViewData["Title"]</h2>
 
+<div asp-validation-summary="All" class="text-danger"></div>
+
 <form asp-action="AddUser" method="post">
+    <input type="hidden" asp-for="Id" />
+    
     <div class="mb-3">
         <label asp-for="Email" class="form-label">Email</label>
         <input asp-for="Email" class="form-control" />

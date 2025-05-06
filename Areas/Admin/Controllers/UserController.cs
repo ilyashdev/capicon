@@ -37,7 +37,6 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    
     public async Task<IActionResult> AddUser(UserSetFieldModel model)
     {
         if (!ModelState.IsValid)

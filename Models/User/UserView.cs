@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace capicon.Models;
-public class UserShowModel
+public class UserDisplayFieldModel
 {
     public string Id { get; set; } = default!;
     public string Email { get; set; } = default!;

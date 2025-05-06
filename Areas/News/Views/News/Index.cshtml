@@ -6,8 +6,12 @@
 
 <div class="text-center">
     <h1 class="display-4">News</h1>
-    @foreach(PostModel News in Model)
-{
-    <li><a href="post/@News.Id">@News.Title</a></li>
-}
+    @foreach (PostModel News in Model)
+    {
+        <li>
+            <a asp-controller="Post" asp-action="Index" asp-route-id="@News.Id">
+                @News.Title
+            </a>
+        </li>
+    }
 </div>

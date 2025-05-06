@@ -1,27 +1,26 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace capicon.Models
+namespace capicon.Models;
+public class UserSetFieldModel
 {
-    public class UserSetFieldModel
-    {
-        public string Id { get; set; } = default!;
-        [Required(ErrorMessage = "Обязательное поле.")]
-        [EmailAddress(ErrorMessage = "Некорректный e-mail.")]
-        public string Email { get; set; } = default!;
+    public string? Id { get; set; }
 
-        [Required(ErrorMessage = "Обязательное поле.")]
-        public string UserName { get; set; } = default!;
+    [Required(ErrorMessage = "Обязательное поле.")]
+    [EmailAddress]
+    public string Email { get; set; } = default!;
 
-        [Required(ErrorMessage = "Обязательное поле.")]
-        [DataType(DataType.Password)]
-        public string Password { get; set; } = default!;
+    [Required(ErrorMessage = "Обязательное поле.")]
+    public string UserName { get; set; } = default!;
 
-        [Required(ErrorMessage = "Обязательное поле.")]
-        [Compare("Password", ErrorMessage = "Пароли не совпадают.")]
-        [DataType(DataType.Password)]
-        public string ConfirmPassword { get; set; } = default!;
+    [Required(ErrorMessage = "Обязательное поле.")]
+    [DataType(DataType.Password)]
+    public string Password { get; set; } = default!;
 
-        [Required(ErrorMessage = "Обязательное поле.")]
-        public string Role { get; set; } = default!;
-    }
+    [Required(ErrorMessage = "Обязательное поле.")]
+    [Compare("Password", ErrorMessage = "Пароли не совпадают")]
+    [DataType(DataType.Password)]
+    public string ConfirmPassword { get; set; } = default!;
+
+    [Required(ErrorMessage = "Обязательное поле.")]
+    public string Role { get; set; } = default!;
 }

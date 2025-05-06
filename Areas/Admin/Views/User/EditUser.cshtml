@@ -6,6 +6,8 @@
 
 <h2>@ViewData["Title"]</h2>
 
+<div asp-validation-summary="All" class="text-danger"></div>
+
 <form asp-action="EditUser" method="post">
     <input type="hidden" asp-for="Id" />
 
