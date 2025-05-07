@@ -1,5 +1,6 @@
 using capicon.Models;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace capicon.Services;
 
@@ -7,28 +8,37 @@ public class PostService
 {
     private readonly CSDbContext _context;
     private readonly int DIFF = 8;
-    
+
     public PostService(CSDbContext context)
     {
         _context = context;
     }
 
-    public void AddPost(PostModel model)
+    public async Task AddPostAsync(PostModel model)
     {
-        _context.News.Add(model);
+        await _context.News.AddAsync(model);
+        await _context.SaveChangesAsync();
+    }
+    public async Task<PostModel> GetPost(int id)
+    {
+        return await _context.News.FirstAsync(n => n.Id == id);
     }
 
-    public PostModel GetPost(int id)
+    public async Task<List<PostModel>> GetPostsAsync(int idOffset = 0)
     {
-        return _context.News.First(n => n.Id == id);
-    }
-
-    public List<PostModel> GetPosts(int idOffset = 0)
-    {
-        return _context.News
+        return await _context.News
             .OrderBy(n => n.dateTime)
             .Skip(idOffset * DIFF)
             .Take(DIFF)
-            .ToList();
+            .ToListAsync();
     }
+
+    public async Task DeletePostAsync(int id)
+    {
+        var post = await _context.News.FirstAsync(n => n.Id == id);
+        _context.News.Remove(post);
+        await _context.SaveChangesAsync();
+    }
+
+    
 }

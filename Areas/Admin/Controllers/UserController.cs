@@ -30,18 +30,18 @@ public class UserController : Controller
 
     [HttpGet]
 
-    public IActionResult AddUser()
+    public async Task<IActionResult> Create()
     {
-        ViewBag.Roles = _accountService.GetAllRoles();
+        ViewBag.Roles = await _accountService.GetAllRolesAsync();
         return View();
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddUser(UserSetFieldModel model)
+    public async Task<IActionResult> Create(UserSetFieldModel model)
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Roles = _accountService.GetAllRoles();
+            ViewBag.Roles = await _accountService.GetAllRolesAsync();
             return View(model);
         }
 
@@ -51,7 +51,7 @@ public class UserController : Controller
             foreach (var error in result.Errors)
                 ModelState.AddModelError("", error.Description);
 
-            ViewBag.Roles = _accountService.GetAllRoles();
+            ViewBag.Roles = await _accountService.GetAllRolesAsync();
             return View(model);
         }
 
@@ -59,7 +59,7 @@ public class UserController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> EditUser(string id)
+    public async Task<IActionResult> Edit(string id)
     {
         var user = await _accountService.GetUserByIdAsync(id);
         if (user == null)
@@ -73,17 +73,17 @@ public class UserController : Controller
             Role = user.Roles.FirstOrDefault() ?? ""
         };
 
-        ViewBag.Roles = _accountService.GetAllRoles();
+        ViewBag.Roles = await _accountService.GetAllRolesAsync();
         return View(model);
     }
 
     [HttpPost]
     
-    public async Task<IActionResult> EditUser(UserSetFieldModel model)
+    public async Task<IActionResult> Edit(UserSetFieldModel model)
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Roles = _accountService.GetAllRoles();
+            ViewBag.Roles = _accountService.GetAllRolesAsync();
             return View(model);
         }
 
@@ -93,15 +93,15 @@ public class UserController : Controller
             foreach (var error in result.Errors)
                 ModelState.AddModelError("", error.Description);
 
-            ViewBag.Roles = _accountService.GetAllRoles();
+            ViewBag.Roles = await _accountService.GetAllRolesAsync();
             return View(model);
         }
 
         return RedirectToAction(nameof(Index));
     }
-    [HttpPost]
 
-    public async Task<IActionResult> DeleteUser(string id)
+    [HttpPost]
+    public async Task<IActionResult> Delete(string id)
     {
         var result = await _accountService.RemoveUserAsync(id);
         if (!result.Succeeded)
@@ -114,7 +114,7 @@ public class UserController : Controller
 
 
     [HttpGet]
-    public async Task<IActionResult> UserDetails(string id)
+    public async Task<IActionResult> Details(string id)
     {
         var user = await _accountService.GetUserByIdAsync(id);
         if (user == null)

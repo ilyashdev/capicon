@@ -1,5 +1,7 @@
+using System.Collections.Immutable;
 using capicon.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace capicon.Services;
 
@@ -36,9 +38,9 @@ public class AccountService
         return result;
     }
 
-    public List<string> GetAllRoles()
+    public async Task<List<string?>> GetAllRolesAsync()
     {
-        return _roleManager.Roles.Select(r => r.Name).ToList()!;
+        return await _roleManager.Roles.Select(r => r.Name).ToListAsync();
     }
 
     public async Task<UserDisplayFieldModel?> GetUserByIdAsync(string id)

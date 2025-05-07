@@ -7,16 +7,17 @@ using capicon.Services;
 namespace capicon.Areas.News.Controllers;
 
 [Area("News")]
-public class NewsController : Controller
+public class HomeController : Controller
 {
     private readonly PostService _postService;
-    public NewsController(ILogger<NewsController> logger, PostService postService)
+    public HomeController(ILogger<HomeController> logger, PostService postService)
     {
         _postService = postService;
     }
 
-    public IActionResult Index(int id)
+    public async Task<IActionResult> IndexAsync(int id)
     {
-        return View(_postService.GetPosts(id));
+        var posts = await _postService.GetPostsAsync(id);
+        return View(posts);
     }
 }

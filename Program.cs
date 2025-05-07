@@ -1,3 +1,4 @@
+using capicon.Models;
 using capicon.Services;
 using DataAccess;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +10,7 @@ var services = builder.Services;
 services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Admin/Login";
+    options.AccessDeniedPath = "/Denied";
 });
 
 services.AddControllersWithViews()
@@ -94,13 +96,15 @@ app.MapAreaControllerRoute(
 app.MapAreaControllerRoute(
     name: "news",
     areaName: "News",
-    pattern: "news/{controller=News}/{action=Index}/{id?}"
+    pattern: "news/{id?}",
+    defaults: new { controller = "Home", Action = "Index" }
 );
 
 app.MapAreaControllerRoute(
     name: "posts",
     areaName: "Post",
-    pattern: "posts/{controller=Posts}/{action=Index}/{id?}"
+    pattern: "post/{id?}",
+    defaults: new { controller = "Home", Action = "Index" }
 );
 
 app.MapControllerRoute(

@@ -1,0 +1,31 @@
+@using capicon.Models
+@model PostModel
+
+@{
+    ViewData["Title"] = "Новый пост";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Add" method="post">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label">Заголовок</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MdText" class="form-label">Содержимое</label>
+        <textarea asp-for="MdText" class="form-control" rows="6"></textarea>
+        <span asp-validation-for="MdText" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Создать</button>
+    <a asp-action="Index" class="btn btn-secondary">Назад</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
