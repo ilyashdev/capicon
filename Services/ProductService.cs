@@ -17,24 +17,20 @@ public class ProductService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<ProductViewModel>> SearchProducts(string query)
-    {
-        return await _context.Products
-            .Include(p => p.Specifications)
-            .Include(p => p.Details)
-            .Where(p => p.Title.Contains(query) || 
-                      p.Description1.Contains(query) || 
-                      p.Description2.Contains(query))
-            .ToListAsync();
-    }
+    public async Task<List<ProductViewModel>> SearchProducts(string query) =>
+      await _context.Products
+        .Include(p => p.Specifications)
+        .Include(p => p.Details)
+        .Where(p => p.Title.Contains(query) || 
+                    p.Description1.Contains(query) || 
+                    p.Description2.Contains(query))
+        .ToListAsync();
 
-    public async Task<ProductViewModel> GetProduct(int id)
-    {
-        return await _context.Products
-            .Include(p => p.Specifications)
-            .Include(p => p.Details)
-            .FirstOrDefaultAsync(p => p.Id == id);
-    }
+    public async Task<ProductViewModel> GetProduct(int id) =>
+      await _context.Products
+        .Include(p => p.Specifications)
+        .Include(p => p.Details)
+        .FirstOrDefaultAsync(p => p.Id == id);
 
     public async Task UpdateProduct(ProductViewModel product)
     {
