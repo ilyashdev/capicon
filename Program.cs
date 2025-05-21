@@ -107,8 +107,11 @@ app.MapAreaControllerRoute(
     defaults: new { controller = "Home", Action = "Index" }
 );
 
-app.MapControllerRoute(
+app.MapAreaControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    areaName:"Index",
+    pattern: "/",
+    defaults: new { controller = "Home", Action = "Index" }
+);
 
 app.Run();

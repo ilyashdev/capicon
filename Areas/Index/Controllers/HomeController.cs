@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using capicon.Models;
 
 namespace capicon.Controllers;
-
+[Area("Index")]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
