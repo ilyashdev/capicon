@@ -17,8 +17,14 @@ public class PostService
         await _context.SaveChangesAsync();
     }
 
+    public async Task DeletePost(PostModel? product)
+    {
+        _context.News.Remove(product);
+        await _context.SaveChangesAsync();
+    }
     public async Task<List<PostModel>> SearchPosts(string query, int page) =>
         await _context.News
+            .OrderBy(n => n.dateTime)
             .Where(p => p.Title.Contains(query))
             .Skip(page * PageSettings.PAGE_SIZE)
             .Take(PageSettings.PAGE_SIZE)
