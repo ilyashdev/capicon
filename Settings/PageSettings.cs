@@ -2,5 +2,5 @@
 
 public static class PageSettings
 {
-    public static int PAGE_SIZE = 8;
+    public const int PAGE_SIZE = 8;
 }
