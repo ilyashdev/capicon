@@ -1,23 +1,22 @@
-using capicon.Models;
 using capicon.Services;
 using DataAccess;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
-services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Admin/Login";
-    options.AccessDeniedPath = "/Denied";
-});
+services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Admin/Login";
+        options.LogoutPath = "/Admin/Logout";
+    });
+
 
 services.AddControllersWithViews()
-    .AddRazorOptions(options =>
-    {
-        options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
-    });
+    .AddRazorOptions(options => { options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml"); });
 
 services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<CSDbContext>()
@@ -96,7 +95,7 @@ app.MapAreaControllerRoute(
 app.MapAreaControllerRoute(
     name: "news",
     areaName: "News",
-    pattern: "news/{id?}",
+    pattern: "news",
     defaults: new { controller = "Home", Action = "Index" }
 );
 
@@ -109,14 +108,14 @@ app.MapAreaControllerRoute(
 
 app.MapAreaControllerRoute(
     name: "catalog",
-    areaName:"Catalog",
+    areaName: "Catalog",
     pattern: "/catalog/{id?}",
     defaults: new { controller = "Home", Action = "Index" }
 );
 
 app.MapAreaControllerRoute(
     name: "index",
-    areaName:"Index",
+    areaName: "Index",
     pattern: "/",
     defaults: new { controller = "Home", Action = "Index" }
 );

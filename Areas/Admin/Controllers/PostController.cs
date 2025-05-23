@@ -10,11 +10,10 @@ namespace capicon.Areas.Admin.Controllers;
 public class PostController(PostService postService) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> Index(int id = 0)
+    public async Task<IActionResult> Index(int page = 0)
     {
         // TODO: Пофиксить
-        var posts = await postService.SearchPosts("", id);
-        ViewBag.PostCount = posts.Count;
+        var posts = await postService.SearchPosts("", page);
         return View(posts);
     }
 
