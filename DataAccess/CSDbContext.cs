@@ -17,7 +17,7 @@ public class CSDbContext : IdentityDbContext
     }
 
     public DbSet<PostModel> News { get; set; } = null!;
-    public DbSet<ProductViewModel> Products { get; set; } = null!;
+    public DbSet<ProductViewModel?> Products { get; set; } = null!;
     public DbSet<ProductSpecification> Specifications { get; set; } = null!;
     public DbSet<ProductDetails> Details { get; set; } = null!;
 

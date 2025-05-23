@@ -1,39 +1,36 @@
 using capicon.Models;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
-
-namespace capicon.Services;
-
-public class PostService(CSDbContext context)
+using capicon.Settings;
+public class PostService
 {
-    private readonly int DIFF = 8;
+    private readonly CSDbContext _context;
 
-    public async Task AddPostAsync(PostModel model)
+    public PostService(CSDbContext context)
     {
-        await context.News.AddAsync(model);
-        await context.SaveChangesAsync();
-    }
-    public async Task<PostModel?> GetPostAsync(int? id)
-    {
-        if (id == null) return null;
-        return await context.News.FirstOrDefaultAsync(n => n.Id == id.Value);
+        _context = context;
     }
 
-    public async Task<List<PostModel>?> GetPostsAsync(int idOffset = 0)
+    public async Task CreatePost(PostModel? product)
     {
-        return await context.News
-            .OrderBy(n => n.dateTime)
-            .Skip(idOffset * DIFF)
-            .Take(DIFF)
+        _context.News.Add(product);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<PostModel>> SearchPosts(string query, int page) =>
+        await _context.News
+            .Where(p => p.Title.Contains(query))
+            .Skip(page * PageSettings.PAGE_SIZE)
+            .Take(PageSettings.PAGE_SIZE)
             .ToListAsync();
-    }
 
-    public async Task DeletePostAsync(int id)
+    public async Task<PostModel?> GetPost(int id) =>
+        await _context.News
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+    public async Task UpdatePost(PostModel? product)
     {
-        var post = await context.News.FirstAsync(n => n.Id == id);
-        context.News.Remove(post);
-        await context.SaveChangesAsync();
+        _context.News.Update(product);
+        await _context.SaveChangesAsync();
     }
-
-    
 }
