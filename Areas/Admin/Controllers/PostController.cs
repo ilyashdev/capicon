@@ -1,10 +1,8 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using capicon.Services;
 
 using capicon.Models;
-using Microsoft.AspNetCore.Identity;
 namespace capicon.Areas.Admin.Controllers;
 
 [Area("Admin")]
@@ -12,10 +10,10 @@ namespace capicon.Areas.Admin.Controllers;
 public class PostController(PostService postService) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int id = 0)
     {
         // TODO: Пофиксить
-        var posts = await postService.SearchPosts("", 0);
+        var posts = await postService.SearchPosts("", id);
         ViewBag.PostCount = posts.Count;
         return View(posts);
     }

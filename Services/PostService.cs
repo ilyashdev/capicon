@@ -1,7 +1,9 @@
 using capicon.Models;
+using capicon.Settings;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
-using capicon.Settings;
+
+namespace capicon.Services;
 
 public class PostService(CSDbContext context)
 {
@@ -11,8 +13,8 @@ public class PostService(CSDbContext context)
         await context.SaveChangesAsync();
     }
 
-    public async Task<List<PostModel>> SearchPosts(string query, int page) =>
-        await context.News
+    public async Task<List<PostModel>> SearchPosts(string? query, int page)
+        => await context.News
             .Where(p => p.Title.Contains(query))
             .Skip(page * PageSettings.PAGE_SIZE)
             .Take(PageSettings.PAGE_SIZE)
