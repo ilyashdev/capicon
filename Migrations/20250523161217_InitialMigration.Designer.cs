@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace capicon.Migrations
 {
     [DbContext(typeof(CSDbContext))]
-    [Migration("20250523152419_UpdateSchema")]
-    partial class UpdateSchema
+    [Migration("20250523161217_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
