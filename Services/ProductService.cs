@@ -17,6 +17,12 @@ public class ProductService
         await _context.SaveChangesAsync();
     }
 
+    public async Task DeleteProduct(ProductViewModel? product)
+    {
+        _context.Products.Remove(product);
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<List<ProductViewModel>> SearchProducts(string query, int page) =>
       await _context.Products
         .Include(p => p.Specifications)
@@ -28,7 +34,7 @@ public class ProductService
         .Take(PageSettings.PAGE_SIZE)
         .ToListAsync();
 
-    public async Task<ProductViewModel?> GetProduct(int id) =>
+    public async Task<ProductViewModel?> GetProduct(int id, int page) =>
       await _context.Products
         .Include(p => p.Specifications)
         .Include(p => p.Details)
