@@ -14,7 +14,8 @@ public class PostController(PostService postService) : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var posts = await postService.GetPostsAsync();
+        // TODO: Пофиксить
+        var posts = await postService.SearchPosts("", 0);
         ViewBag.PostCount = posts.Count;
         return View(posts);
     }
@@ -28,14 +29,14 @@ public class PostController(PostService postService) : Controller
     [HttpPost]
     public async Task<IActionResult> Add(PostModel model)
     {
-        await postService.AddPostAsync(model);
+        await postService.CreatePost(model);
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
-        await postService.DeletePostAsync(id);
+        await postService.DeletePost(id);
         return RedirectToAction(nameof(Index));
     }
 

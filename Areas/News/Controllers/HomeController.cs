@@ -17,7 +17,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> IndexAsync(int id)
     {
-        var posts = await _postService.GetPostsAsync(id);
+        var posts = await _postService.SearchPosts("", id);
         return View(posts);
     }
 }
