@@ -19,12 +19,13 @@ public class PostService
         await _context.News.AddAsync(model);
         await _context.SaveChangesAsync();
     }
-    public async Task<PostModel> GetPost(int id)
+    public async Task<PostModel?> GetPostAsync(int? id)
     {
-        return await _context.News.FirstAsync(n => n.Id == id);
+        if (id == null) return null;
+        return await _context.News.FirstOrDefaultAsync(n => n.Id == id.Value);
     }
 
-    public async Task<List<PostModel>> GetPostsAsync(int idOffset = 0)
+    public async Task<List<PostModel>?> GetPostsAsync(int idOffset = 0)
     {
         return await _context.News
             .OrderBy(n => n.dateTime)

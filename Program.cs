@@ -108,6 +108,13 @@ app.MapAreaControllerRoute(
 );
 
 app.MapAreaControllerRoute(
+    name: "catalog",
+    areaName:"Catalog",
+    pattern: "/catalog/{id?}",
+    defaults: new { controller = "Home", Action = "Index" }
+);
+
+app.MapAreaControllerRoute(
     name: "index",
     areaName:"Index",
     pattern: "/",

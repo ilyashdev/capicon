@@ -8,6 +8,8 @@
 *.sln.dotsettings
 *.sln.dotsettings.user
 
+Migrations/
+
 # ASP.NET Core files
 bin/
 obj/

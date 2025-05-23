@@ -4,17 +4,13 @@ using capicon.Services;
 namespace capicon.Areas.Posts.Controllers;
 
 [Area("Post")]
-public class HomeController : Controller
+public class HomeController(PostService postService) : Controller
 {
-    private readonly PostService _postService;
-
-    public HomeController(PostService postService)
-    {
-        _postService = postService;
-    }
     public async Task<IActionResult> IndexAsync(int id)
     {
-        var post = await _postService.GetPost(id);
+        var post = await postService.GetPostAsync(id);
+        if (post == null)
+            return NotFound();
         return View(post);
     }
 }
