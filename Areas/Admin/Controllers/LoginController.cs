@@ -2,6 +2,8 @@ using capicon.Areas.Admin.Models;
 using capicon.Services;
 using Microsoft.AspNetCore.Mvc;
 
+namespace capicon.Areas.Admin.Controllers;
+
 [Area("Admin")]
 public class LoginController(AccountService accountService) : Controller
 {

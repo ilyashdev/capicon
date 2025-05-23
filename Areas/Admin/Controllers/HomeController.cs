@@ -8,16 +8,11 @@ namespace capicon.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class HomeController : Controller
+public class HomeController(AccountService accountService, ILogger<HomeController> logger)
+    : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly AccountService _accountService;
-
-    public HomeController(AccountService accountService, ILogger<HomeController> logger)
-    {
-        _accountService = accountService;
-        _logger = logger;
-    }
+    private readonly ILogger<HomeController> _logger = logger;
+    private readonly AccountService _accountService = accountService;
 
     [HttpGet]
     public IActionResult Index()

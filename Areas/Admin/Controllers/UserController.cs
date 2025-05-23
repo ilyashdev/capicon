@@ -40,16 +40,13 @@ public class UserController(AccountService accountService, ILogger<HomeControlle
         }
 
         var result = await accountService.AddUserAsync(model);
-        if (!result.Succeeded)
-        {
-            foreach (var error in result.Errors)
-                ModelState.AddModelError("", error.Description);
+        if (result.Succeeded) return RedirectToAction(nameof(Index));
+        foreach (var error in result.Errors)
+            ModelState.AddModelError("", error.Description);
 
-            ViewBag.Roles = await accountService.GetAllRolesAsync();
-            return View(model);
-        }
+        ViewBag.Roles = await accountService.GetAllRolesAsync();
+        return View(model);
 
-        return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
@@ -82,16 +79,13 @@ public class UserController(AccountService accountService, ILogger<HomeControlle
         }
 
         var result = await accountService.ModifyUserAsync(model);
-        if (!result.Succeeded)
-        {
-            foreach (var error in result.Errors)
-                ModelState.AddModelError("", error.Description);
+        if (result.Succeeded) return RedirectToAction(nameof(Index));
+        foreach (var error in result.Errors)
+            ModelState.AddModelError("", error.Description);
 
-            ViewBag.Roles = await accountService.GetAllRolesAsync();
-            return View(model);
-        }
+        ViewBag.Roles = await accountService.GetAllRolesAsync();
+        return View(model);
 
-        return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
@@ -99,10 +93,7 @@ public class UserController(AccountService accountService, ILogger<HomeControlle
     {
         var result = await accountService.RemoveUserAsync(id);
         if (!result.Succeeded)
-        {
             TempData["Error"] = "Ошибка при удалении пользователя.";
-        }
-
         return RedirectToAction(nameof(Index));
     }
 
