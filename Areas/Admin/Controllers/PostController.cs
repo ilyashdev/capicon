@@ -9,19 +9,13 @@ namespace capicon.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin,Editor")]
-public class PostController : Controller
+public class PostController(PostService postService) : Controller
 {
-    PostService _postService;
-    public PostController(PostService postService)
-    {
-        _postService = postService;
-    }
-
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var posts = await _postService.GetPostsAsync();
-        ViewBag.PostCount = posts.Count();
+        var posts = await postService.GetPostsAsync();
+        ViewBag.PostCount = posts.Count;
         return View(posts);
     }
 
@@ -34,14 +28,14 @@ public class PostController : Controller
     [HttpPost]
     public async Task<IActionResult> Add(PostModel model)
     {
-        await _postService.AddPostAsync(model);
+        await postService.AddPostAsync(model);
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
-        await _postService.DeletePostAsync(id);
+        await postService.DeletePostAsync(id);
         return RedirectToAction(nameof(Index));
     }
 

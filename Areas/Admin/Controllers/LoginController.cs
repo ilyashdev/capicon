@@ -3,22 +3,15 @@ using capicon.Services;
 using Microsoft.AspNetCore.Mvc;
 
 [Area("Admin")]
-public class LoginController : Controller
+public class LoginController(AccountService accountService) : Controller
 {
-    private readonly AccountService _accountService;
-
-    public LoginController(AccountService accountService)
-    {
-        _accountService = accountService;
-    }
-
     [HttpGet]
     public IActionResult Index() => View();
 
     [HttpPost]
     public async Task<IActionResult> Index(LoginViewModel model)
     {
-        var success = await _accountService.SignInAsync(model.Email, model.Password);
+        var success = await accountService.SignInAsync(model.Email, model.Password);
         if (success)
             return RedirectToAction("Index", "Home");
 
@@ -29,7 +22,7 @@ public class LoginController : Controller
     [HttpPost]
     public async Task<IActionResult> Logout()
     {
-        await _accountService.SignOutAsync();
+        await accountService.SignOutAsync();
         return RedirectToAction(nameof(Index));
     }
 }

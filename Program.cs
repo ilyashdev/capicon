@@ -108,7 +108,7 @@ app.MapAreaControllerRoute(
 );
 
 app.MapAreaControllerRoute(
-    name: "default",
+    name: "index",
     areaName:"Index",
     pattern: "/",
     defaults: new { controller = "Home", Action = "Index" }

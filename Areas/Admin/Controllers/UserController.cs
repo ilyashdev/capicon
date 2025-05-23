@@ -8,23 +8,17 @@ namespace capicon.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class UserController : Controller
+public class UserController(AccountService accountService, ILogger<HomeController> logger)
+    : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly AccountService _accountService;
-
-    public UserController(AccountService accountService, ILogger<HomeController> logger)
-    {
-        _accountService = accountService;
-        _logger = logger;
-    }
+    private readonly ILogger<HomeController> _logger = logger;
 
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var usersCount = await _accountService.GetAllUsersAsync();
+        var usersCount = await accountService.GetAllUsersAsync();
         ViewBag.UserCount = usersCount.Count;
-        var users = await _accountService.GetAllUsersAsync();
+        var users = await accountService.GetAllUsersAsync();
         return View(users);
     }
 
@@ -32,7 +26,7 @@ public class UserController : Controller
 
     public async Task<IActionResult> Create()
     {
-        ViewBag.Roles = await _accountService.GetAllRolesAsync();
+        ViewBag.Roles = await accountService.GetAllRolesAsync().ConfigureAwait(false);
         return View();
     }
 
@@ -41,17 +35,17 @@ public class UserController : Controller
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Roles = await _accountService.GetAllRolesAsync();
+            ViewBag.Roles = await accountService.GetAllRolesAsync().ConfigureAwait(false);
             return View(model);
         }
 
-        var result = await _accountService.AddUserAsync(model);
+        var result = await accountService.AddUserAsync(model);
         if (!result.Succeeded)
         {
             foreach (var error in result.Errors)
                 ModelState.AddModelError("", error.Description);
 
-            ViewBag.Roles = await _accountService.GetAllRolesAsync();
+            ViewBag.Roles = await accountService.GetAllRolesAsync();
             return View(model);
         }
 
@@ -61,7 +55,7 @@ public class UserController : Controller
     [HttpGet]
     public async Task<IActionResult> Edit(string id)
     {
-        var user = await _accountService.GetUserByIdAsync(id);
+        var user = await accountService.GetUserByIdAsync(id);
         if (user == null)
             return NotFound();
 
@@ -73,7 +67,7 @@ public class UserController : Controller
             Role = user.Roles.FirstOrDefault() ?? ""
         };
 
-        ViewBag.Roles = await _accountService.GetAllRolesAsync();
+        ViewBag.Roles = await accountService.GetAllRolesAsync();
         return View(model);
     }
 
@@ -83,17 +77,17 @@ public class UserController : Controller
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.Roles = _accountService.GetAllRolesAsync();
+            ViewBag.Roles = accountService.GetAllRolesAsync();
             return View(model);
         }
 
-        var result = await _accountService.ModifyUserAsync(model);
+        var result = await accountService.ModifyUserAsync(model);
         if (!result.Succeeded)
         {
             foreach (var error in result.Errors)
                 ModelState.AddModelError("", error.Description);
 
-            ViewBag.Roles = await _accountService.GetAllRolesAsync();
+            ViewBag.Roles = await accountService.GetAllRolesAsync();
             return View(model);
         }
 
@@ -103,7 +97,7 @@ public class UserController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(string id)
     {
-        var result = await _accountService.RemoveUserAsync(id);
+        var result = await accountService.RemoveUserAsync(id);
         if (!result.Succeeded)
         {
             TempData["Error"] = "Ошибка при удалении пользователя.";
@@ -116,7 +110,7 @@ public class UserController : Controller
     [HttpGet]
     public async Task<IActionResult> Details(string id)
     {
-        var user = await _accountService.GetUserByIdAsync(id);
+        var user = await accountService.GetUserByIdAsync(id);
         if (user == null)
             return NotFound();
 
