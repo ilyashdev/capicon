@@ -1,8 +1,137 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    
 }
 
-<div class="text-center">
-    <h1 class="display-4">hii :3</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@await Html.PartialAsync("../../../../Views/Shared/Header/_Header.cshtml")
+<section class="container-fluid mb-4" style="height: 550px;">
+    <div class="row h-100">
+        
+        <div class="col-md-6 p-5 d-flex align-items-center">
+    <div class="w-100 h-100 d-flex flex-column py-5 justify-content-between py-4">
+        <div class="mb-auto"> 
+            <h1>КАПИКОН</h1>
+        </div>
+        
+        <div class="my-4 flex-grow-1 d-flex align-items-center"> 
+            <p class="mb-0">Разработка и производство сухих молочных продуктов для кормления сельскохозяйственных животных</p>
+        </div>
+
+        <div class="mt-auto"> 
+            <button class="btn rounded-pill px-4 py-2" 
+                    style="--bs-btn-bg: #69afdb; 
+                           --bs-btn-hover-bg: #c040be;
+                           --bs-btn-active-bg: #2f8c9e;
+                            --bs-btn-color: #fff;
+                            --bs-btn-hover-color: #fff;
+                            --bs-btn-active-color: #fff; 
+                           --bs-btn-border-color: #69afdb;">
+                Контакты
+            </button>
+        </div>
+
+    </div>
 </div>
+
+    <div class="col-md-6 p-0 h-100 position-relative" style="overflow: hidden;">
+            <img 
+                src="resource/maincow.jpg" 
+                alt="корова"
+                class="w-100 h-100 object-fit-cover"
+                style="min-width: 100%; min-height: 100%;"
+            >
+             <div class="position-absolute top-0 start-0 w-100 h-100" 
+         style="clip-path: polygon(0 -1%, 40% 0, 0 100%); background: rgb(255,255,255);">
+    </div>
+
+    <div class="position-absolute bottom-0 end-0 w-100 h-100" 
+         style="clip-path: polygon(120% 100%, 80% 100%, 120% 0); background: rgb(255,255,255);">
+    </div>
+        </div>
+    </div>
+</section>
+<section class="container-fluid mb-4">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1>Наша продукция</h1>
+        </div>
+    </div>
+    
+    <div class="row mx-4 g-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100 border-0 ">
+                <div class="d-flex align-items-center justify-content-center" style="height: 250px;">
+                    <img 
+                        src="resource/pig.png" 
+                        alt="поросёнок" 
+                        class="img-fluid mh-100"
+                        style="object-fit: contain; max-width: 90%;"
+                    >
+                </div>
+                <div class="card-title bg-transparent border-0 text-center py-2" >
+                    <h5 class="mb-0">Поросята</h5>
+                </div>
+                <div class="card-text bg-transparent border-0 text-center pb-3">
+                    <p class="mb-0">Описание</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100 border-0 ">
+                <div class="d-flex align-items-center justify-content-center" style="height: 250px;">
+                    <img 
+                        src="resource/cow.png" 
+                        alt="телёнок" 
+                        class="img-fluid mh-100"
+                        style="object-fit: contain; max-width: 90%;"
+                    >
+                </div>
+                <div class="card-title bg-transparent border-0 text-center py-2">
+                    <h5 class="mb-0">Телята</h5>
+                </div>
+                <div class="card-text bg-transparent border-0 text-center pb-3">
+                    <p class="mb-0">Описание</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100 border-0 ">
+                <div class="d-flex align-items-center justify-content-center" style="height: 250px;">
+                    <img 
+                        src="resource/spec.png" 
+                        alt="cпециализированные продукты" 
+                        class="img-fluid mh-100"
+                        style="object-fit: contain; max-width: 90%;"
+                    >
+                </div>
+                <div class="card-title bg-transparent border-0 text-center py-2 ">
+                    <h5 class="mb-0">Специализированные продукты</h5>
+                </div>
+                <div class="card-text bg-transparent border-0 text-center pb-3">
+                    <p class="mb-0">Узкоспециализированная продукция для новорождённых</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card h-100 border-0 ">
+                <div class="d-flex align-items-center justify-content-center" style="height: 250px;">
+                    <img 
+                        src="resource/spec.png" 
+                        alt="иммуностарт" 
+                        class="img-fluid mh-100"
+                        style="object-fit: contain; max-width: 90%;"
+                    >
+                </div>
+                <div class="card-title bg-transparent border-0 text-center py-2">
+                    <h5 class="mb-0">Иммуностарт</h5>
+                </div>
+                <div class="card-text bg-transparent border-0 text-center pb-3">
+                    <p class="mb-0">Выделяет здоровье и иммунитет с первых дней жизни</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
