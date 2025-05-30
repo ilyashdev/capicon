@@ -1,7 +1,8 @@
-namespace capicon.Models;
+namespace capicon_backend.Models.Catalog;
+
 public class ProductDetails
 {
-    public int Id { get; set; }
+    public required int Id { get; set; }
     public string ShelfLife { get; set; }
     public string Packaging { get; set; }
     public string Dosage { get; set; }

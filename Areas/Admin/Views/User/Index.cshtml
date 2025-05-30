@@ -1,5 +1,5 @@
-@using capicon.Models;
-@model List<UserDisplayFieldModel>
+@using capicon_backend.Models.User;
+@model List<UserViewModel>
 @{
     ViewData["Title"] = "Пользователи";
 }
@@ -9,28 +9,28 @@
 <a asp-action="Create" class="btn btn-success mb-3">Добавить пользователя</a>
 <table class="table table-bordered table-striped">
     <thead>
-        <tr>
-            <th>Email</th>
-            <th>Логин</th>
-            <th>Роль</th>
-            <th>Действия</th>
-        </tr>
+    <tr>
+        <th>Email</th>
+        <th>Логин</th>
+        <th>Роль</th>
+        <th>Действия</th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@user.Email</td>
-                <td>@user.UserName</td>
-                <td>@string.Join(", ", user.Roles)</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-info btn-sm">Просмотр</a>
-                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-warning btn-sm">Редактировать</a>
-                    <form asp-action="Delete" asp-route-id="@user.Id" method="post" style="display:inline">
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Удалить пользователя?');">Удалить</button>
-                    </form>
-                </td>
-            </tr>
-        }
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Email</td>
+            <td>@user.Username</td>
+            <td>@user.Role</td>
+            <td>
+                <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-info btn-sm">Просмотр</a>
+                <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-warning btn-sm">Редактировать</a>
+                <form asp-action="Delete" asp-route-id="@user.Id" method="post" style="display:inline">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Удалить пользователя?');">Удалить</button>
+                </form>
+            </td>
+        </tr>
+    }
     </tbody>
 </table>

@@ -1,24 +1,30 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using capicon.Services;
+using capicon_backend.Services;
 
-using capicon.Models;
-namespace capicon.Areas.Admin.Controllers;
+using capicon_backend.Models.User;
+
+namespace capicon_backend.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class UserController(AccountService accountService, ILogger<HomeController> logger)
+public class UserController
     : Controller
 {
-    private readonly ILogger<HomeController> _logger = logger;
+    private readonly ILogger<UserController> _logger;
+    private readonly AccountService _accountService;
+    private readonly int pageSize = 16;
+    
+    public UserController(AccountService accountService, ILogger<UserController> logger)
+    {
+        _logger = logger;
+        _accountService = accountService;
+    }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 0)
     {
-        var usersCount = await accountService.GetAllUsersAsync();
-        ViewBag.UserCount = usersCount.Count;
-        var users = await accountService.GetAllUsersAsync();
+        var users = await _accountService.SearchUsersAsync("", pageSize*page, pageSize);
         return View(users);
     }
 
@@ -26,25 +32,24 @@ public class UserController(AccountService accountService, ILogger<HomeControlle
 
     public async Task<IActionResult> Create()
     {
-        ViewBag.Roles = await accountService.GetAllRolesAsync().ConfigureAwait(false);
+        ViewBag.Roles = await _accountService.GetSystemRolesAsync();
         return View();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(UserSetFieldModel model)
+    public async Task<IActionResult> Create(UserModifyFieldModel model)
     {
+        ViewBag.Roles = await _accountService.GetSystemRolesAsync();
         if (!ModelState.IsValid)
         {
-            ViewBag.Roles = await accountService.GetAllRolesAsync().ConfigureAwait(false);
             return View(model);
         }
 
-        var result = await accountService.AddUserAsync(model);
+        var result = await _accountService.CreateUserAsync(model);
         if (result.Succeeded) return RedirectToAction(nameof(Index));
         foreach (var error in result.Errors)
             ModelState.AddModelError("", error.Description);
 
-        ViewBag.Roles = await accountService.GetAllRolesAsync();
         return View(model);
 
     }
@@ -52,46 +57,42 @@ public class UserController(AccountService accountService, ILogger<HomeControlle
     [HttpGet]
     public async Task<IActionResult> Edit(string id)
     {
-        var user = await accountService.GetUserByIdAsync(id);
+        var user = await _accountService.GetUserByIdAsync(id);
         if (user == null)
             return NotFound();
 
-        var model = new UserSetFieldModel
+        var model = new UserModifyFieldModel
         {
-            Id = user.Id,
+            Username = user.Username,
             Email = user.Email,
-            UserName = user.UserName,
-            Role = user.Roles.FirstOrDefault() ?? ""
+            Password = "",
+            ConfirmPassword = "",
+            Role = user.Role
         };
 
-        ViewBag.Roles = await accountService.GetAllRolesAsync();
+        ViewBag.Roles = await _accountService.GetSystemRolesAsync();
         return View(model);
     }
 
     [HttpPost]
     
-    public async Task<IActionResult> Edit(UserSetFieldModel model)
+    public async Task<IActionResult> Edit(UserModifyFieldModel model)
     {
+        ViewBag.Roles = _accountService.GetSystemRolesAsync();
         if (!ModelState.IsValid)
-        {
-            ViewBag.Roles = accountService.GetAllRolesAsync();
             return View(model);
-        }
 
-        var result = await accountService.ModifyUserAsync(model);
+        var result = await _accountService.ModifyUserAsync(model);
         if (result.Succeeded) return RedirectToAction(nameof(Index));
         foreach (var error in result.Errors)
             ModelState.AddModelError("", error.Description);
-
-        ViewBag.Roles = await accountService.GetAllRolesAsync();
         return View(model);
-
     }
 
     [HttpPost]
     public async Task<IActionResult> Delete(string id)
     {
-        var result = await accountService.RemoveUserAsync(id);
+        var result = await _accountService.DeleteUserAsync(id);
         if (!result.Succeeded)
             TempData["Error"] = "Ошибка при удалении пользователя.";
         return RedirectToAction(nameof(Index));
@@ -101,11 +102,11 @@ public class UserController(AccountService accountService, ILogger<HomeControlle
     [HttpGet]
     public async Task<IActionResult> Details(string id)
     {
-        var user = await accountService.GetUserByIdAsync(id);
-        if (user == null)
+        var model = await _accountService.GetUserByIdAsync(id);
+        if (model == null)
             return NotFound();
 
-        return View(user);
+        return View(model);
     }
 
 }

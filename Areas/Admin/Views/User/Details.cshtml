@@ -1,5 +1,5 @@
-@using capicon.Models;
-@model UserDisplayFieldModel
+@using capicon_backend.Models.User;
+@model UserViewModel
 @{
     ViewData["Title"] = "Информация о пользователе";
 }
@@ -10,8 +10,8 @@
     <div class="card-body">
         <p><strong>Id:</strong> @Model.Id</p>
         <p><strong>Email:</strong> @Model.Email</p>
-        <p><strong>Имя пользователя:</strong> @Model.UserName</p>
-        <p><strong>Роль:</strong> @string.Join(", ", Model.Roles)</p>
+        <p><strong>Имя пользователя:</strong> @Model.Username</p>
+        <p><strong>Роль:</strong> @Model.Role</p>
     </div>
 </div>
 

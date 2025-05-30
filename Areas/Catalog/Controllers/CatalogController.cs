@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
-namespace capicon.Areas.Catalog.Controllers;
+namespace capicon_backend.Areas.Catalog.Controllers;
+
 [Area("Catalog")]
 public class HomeController : Controller
 {
-
     public IActionResult Index(int id)
     {
         return View();

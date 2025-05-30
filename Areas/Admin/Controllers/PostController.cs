@@ -1,19 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using capicon.Services;
+using capicon_backend.Services;
 
-using capicon.Models;
-namespace capicon.Areas.Admin.Controllers;
+using capicon_backend.Models;
+namespace capicon_backend.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin,Editor")]
-public class PostController(PostService postService) : Controller
+public class PostController : Controller
 {
+    private readonly int pageSize = 8;
+    private readonly PostService _postService;
+
+    public PostController(PostService postService)
+    {
+        _postService = postService;
+    }
     [HttpGet]
     public async Task<IActionResult> Index(int page = 0)
     {
         // TODO: Пофиксить
-        var posts = await postService.SearchPosts("", page);
+        var posts = await _postService.SearchPostsAsync("", pageSize*page, pageSize);
         return View(posts);
     }
 
@@ -24,16 +31,18 @@ public class PostController(PostService postService) : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add(PostModel model)
+    public async Task<IActionResult> Add(NewsPostModel model)
     {
-        await postService.CreatePost(model);
+        await _postService.CreatePostAsync(model);
         return RedirectToAction(nameof(Index));
     }
+    
+    
 
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
-        await postService.DeletePost(id);
+        await _postService.DeletePost(id);
         return RedirectToAction(nameof(Index));
     }
 

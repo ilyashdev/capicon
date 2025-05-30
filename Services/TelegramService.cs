@@ -1,6 +1,6 @@
-﻿using Telegram.Bot;
+namespace capicon_backend.Services;
 
-namespace capicon.Services;
+using Telegram.Bot;
 
 public class TelegramService
 {

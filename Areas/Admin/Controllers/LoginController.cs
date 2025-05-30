@@ -1,20 +1,27 @@
-using capicon.Areas.Admin.Models;
-using capicon.Services;
+using capicon_backend.Models;
+using capicon_backend.Models.User;
+using capicon_backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace capicon.Areas.Admin.Controllers;
+namespace capicon_backend.Areas.Admin.Controllers;
 
 [Area("Admin")]
-public class LoginController(AccountService accountService) : Controller
+public class LoginController : Controller
 {
+    private readonly AccountService _accountService;
+
+    public LoginController(AccountService accountService)
+    {
+        _accountService = accountService;
+    }
     [HttpGet]
     public IActionResult Index() => View();
 
     [HttpPost]
-    public async Task<IActionResult> Index(LoginViewModel model)
+    public async Task<IActionResult> Index(UserAuthModel model)
     {
-        var success = await accountService.SignInAsync(model.Email, model.Password);
-        if (success)
+        var result = await _accountService.AuthorizeUserAsync(model);
+        if (result.Succeeded)
             return RedirectToAction("Index", "Home");
 
         ModelState.AddModelError("", "Неверный логин или пароль.");
@@ -24,7 +31,7 @@ public class LoginController(AccountService accountService) : Controller
     [HttpPost]
     public async Task<IActionResult> Logout()
     {
-        await accountService.SignOutAsync();
+        await _accountService.SignOutAsync();
         return RedirectToAction(nameof(Index));
     }
 }

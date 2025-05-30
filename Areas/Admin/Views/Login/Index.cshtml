@@ -1,4 +1,4 @@
-@model capicon.Areas.Admin.Models.LoginViewModel
+@model capicon_backend.Models.User.UserAuthModel
 
 @{
     ViewData["Title"] = "Вход";
@@ -17,10 +17,6 @@
             <label for="Password" class="form-label">Пароль</label>
             @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-        </div>
-        <div class="mb-3 form-check">
-            @Html.CheckBoxFor(model => model.RememberMe, new { @class = "form-check-input" })
-            <label class="form-check-label" for="RememberMe">Запомнить меня</label>
         </div>
         <div class="d-grid">
             <button type="submit" class="btn btn-primary">Войти</button>

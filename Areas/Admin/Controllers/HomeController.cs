@@ -1,22 +1,24 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using capicon.Services;
+using Microsoft.Extensions.Logging;
 
-using capicon.Areas.Admin.Models;
-namespace capicon.Areas.Admin.Controllers;
-
-[Area("Admin")]
-[Authorize(Roles = "Admin")]
-public class HomeController(AccountService accountService, ILogger<HomeController> logger)
-    : Controller
+namespace capicon_backend.Areas.Admin.Controllers
 {
-    private readonly ILogger<HomeController> _logger = logger;
-    private readonly AccountService _accountService = accountService;
-
-    [HttpGet]
-    public IActionResult Index()
+    [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+    public class HomeController : Controller
     {
-        return View();
+        private readonly ILogger<HomeController> _logger;
+
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
+
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View();
+        }
     }
 }
