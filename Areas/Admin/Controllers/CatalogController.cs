@@ -40,7 +40,10 @@ public class CatalogController : Controller
     
     // TODO: Реализовать другие методы
     // UPD: Сначала я думал забить, но сервис для продуктов оказался удобнее 
+    // UPDUPD: нужны модели для этого контроллера, я сделаю тут ошибку чтобы вы увидели
 
+    #error нужны модели для контроллера CatalogController в админке
+    
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
