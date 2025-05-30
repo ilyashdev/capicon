@@ -16,9 +16,6 @@ namespace capicon_backend.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public async Task<IActionResult> Index() => View();
     }
 }

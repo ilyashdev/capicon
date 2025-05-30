@@ -12,9 +12,11 @@ public class ProductService(CapiconDBContext context)
         await context.SaveChangesAsync();
     }
 
-    public async Task DeleteProduct(ProductModel product)
+    public async Task DeleteProduct(int id)
     {
-        context.Products.Remove(product);
+        var res = await context.Products.FirstOrDefaultAsync(p => p.Id == id);
+        if (res == null) return;
+        context.Products.Remove(res);
         await context.SaveChangesAsync();
     }
 
@@ -27,7 +29,7 @@ public class ProductService(CapiconDBContext context)
             .Take(take)
             .ToListAsync();
 
-    public async Task<ProductModel?> GetProduct(int id, int page) =>
+    public async Task<ProductModel?> GetProduct(int id) =>
         await context.Products
             .FirstOrDefaultAsync(p => p.Id == id);
 

@@ -15,7 +15,7 @@ public class LoginController : Controller
         _accountService = accountService;
     }
     [HttpGet]
-    public IActionResult Index() => View();
+    public async Task<IActionResult> Index() => View();
 
     [HttpPost]
     public async Task<IActionResult> Index(UserAuthModel model)

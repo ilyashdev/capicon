@@ -25,10 +25,7 @@ public class PostController : Controller
     }
 
     [HttpGet]
-    public IActionResult Add()
-    {
-        return View();
-    }
+    public IActionResult Add() => View();
 
     [HttpPost]
     public async Task<IActionResult> Add(NewsPostModel model)
@@ -37,8 +34,6 @@ public class PostController : Controller
         return RedirectToAction(nameof(Index));
     }
     
-    
-
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
