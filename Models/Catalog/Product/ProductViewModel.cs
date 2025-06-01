@@ -15,9 +15,8 @@ public class ProductViewModel
 
     public string Usage { get; set; }
     public string Warning { get; set;} 
-    
-
-    public ProductDetails Details { get; set; } 
+    public string StoragePeriod { get; set; }
+    public string Recomendation { get; set; }
 }
 
 
