@@ -21,7 +21,7 @@
                 <td>@post.Title</td>
                 <td>@post.dateTime</td>
                 <td>
-                    <a asp-area="Post" asp-controller="Home" asp-action="Index" asp-route-id="@post.Id"
+                    <a asp-area="Post" asp-controller="Catalog" asp-action="Index" asp-route-id="@post.Id"
                         class="btn btn-info btn-sm">Просмотр</a>
                     <a asp-action="Edit" asp-route-id="@post.Id" class="btn btn-warning btn-sm">Редактировать</a>
                     <form asp-action="Delete" asp-route-id="@post.Id" method="post" style="display:inline">

@@ -12,7 +12,6 @@ public class PostController(PostService postService) : Controller
     [HttpGet]
     public async Task<IActionResult> Index(int page = 0)
     {
-        // TODO: Пофиксить
         var posts = await postService.SearchPosts("", page);
         return View(posts);
     }

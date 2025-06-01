@@ -26,6 +26,7 @@ services.AddDbContext<CSDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DataBase")));
 
 services.AddScoped<AccountService>();
+services.AddScoped<ProductService>();
 services.AddScoped<PostService>();
 
 var app = builder.Build();

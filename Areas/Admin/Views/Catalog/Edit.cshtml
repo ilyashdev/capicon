@@ -1,0 +1,89 @@
+@model capicon.Models.ProductViewModel
+@{
+    ViewBag.Title = "Edit Product";
+}
+
+<h2>Edit Product</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div>
+        <label>Title</label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+    <div>
+        <label>Subtitle</label>
+        <input asp-for="Subtitle" class="form-control" />
+    </div>
+    <div>
+        <label>Main Image</label>
+        <input asp-for="MainImage" class="form-control" />
+    </div>
+    <div>
+        <label>Description1</label>
+        <textarea asp-for="Description1" class="form-control"></textarea>
+    </div>
+    <div>
+        <label>Description2</label>
+        <textarea asp-for="Description2" class="form-control"></textarea>
+    </div>
+    <div>
+        <label>Usage</label>
+        <textarea asp-for="Usage" class="form-control"></textarea>
+    </div>
+    <div>
+        <label>Warning</label>
+        <textarea asp-for="Warning" class="form-control"></textarea>
+    </div>
+
+    <h4>Specifications</h4>
+    <div id="specifications">
+@for (int i = 0; i < (Model.Specifications?.Count ?? 0); i++)
+{
+    <div class="spec-item mb-2 p-2 border">
+        <input type="hidden" name="Specifications[@i].Id" value="@Model.Specifications[i].Id" />
+        <div>
+            <label>Text</label>
+            <input name="Specifications[@i].Text" value="@Model.Specifications[i].Text" class="form-control" />
+        </div>
+        <div>
+            <label>Amount</label>
+            <input name="Specifications[@i].Amount" value="@Model.Specifications[i].Amount" type="number" class="form-control" />
+        </div>
+        <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeSpec(this)">Remove</button>
+    </div>
+}
+    </div>
+
+    <button type="button" class="btn btn-secondary mt-2" onclick="addSpec()">Add Specification</button>
+    <br /><br />
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+@section Scripts {
+<script>
+    let specIndex = @Model.Specifications?.Count ?? 0;
+
+    function addSpec() {
+        const container = document.getElementById('specifications');
+        const html = `
+<div class="spec-item mb-2 p-2 border">
+    <div>
+        <label>Text</label>
+        <input name="Specifications[${specIndex}].Text" class="form-control" />
+    </div>
+    <div>
+        <label>Amount</label>
+        <input name="Specifications[${specIndex}].Amount" type="number" class="form-control" />
+    </div>
+    <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeSpec(this)">Remove</button>
+</div>`;
+        container.insertAdjacentHTML('beforeend', html);
+        specIndex++;
+    }
+
+    function removeSpec(button) {
+        button.closest('.spec-item').remove();
+    }
+</script>
+}

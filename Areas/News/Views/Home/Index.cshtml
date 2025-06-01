@@ -9,7 +9,7 @@
     @foreach (PostModel news in Model)
     {
         <li>
-            <a asp-area="Post" asp-controller="Home" asp-action="Index" asp-route-id="@news.Id">
+            <a asp-area="Post" asp-controller="Catalog" asp-action="Index" asp-route-id="@news.Id">
                 @news.Title
             </a>
         </li>

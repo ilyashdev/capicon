@@ -8,12 +8,7 @@ namespace capicon.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class HomeController(AccountService accountService, ILogger<HomeController> logger)
-    : Controller
-{
-    private readonly ILogger<HomeController> _logger = logger;
-    private readonly AccountService _accountService = accountService;
-
+public class HomeController : Controller {
     [HttpGet]
     public IActionResult Index()
     {
