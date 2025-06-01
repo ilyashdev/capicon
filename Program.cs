@@ -1,18 +1,11 @@
-using capicon_backend.Database;
-using capicon_backend.Services;
+using capicon.Services;
+using DataAccess;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
-
-services.AddDbContext<CapiconDBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DataBase")));
-
-services.AddScoped<AccountService>();
-services.AddScoped<PostService>();
-services.AddScoped<ProductService>();
 
 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -21,18 +14,25 @@ services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         options.LogoutPath = "/Admin/Logout";
     });
 
+
 services.AddControllersWithViews()
     .AddRazorOptions(options => { options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml"); });
 
 services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<CapiconDBContext>()
+    .AddEntityFrameworkStores<CSDbContext>()
     .AddDefaultTokenProviders();
+
+services.AddDbContext<CSDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DataBase")));
+
+services.AddScoped<AccountService>();
+services.AddScoped<PostService>();
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<CapiconDBContext>();
+    var db = scope.ServiceProvider.GetRequiredService<CSDbContext>();
     await db.Database.MigrateAsync();
 
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -75,18 +75,15 @@ using (var scope = app.Services.CreateScope())
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // если нужно отдавать CSS/JS
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseAntiforgery();
 app.MapStaticAssets();
 
 app.MapAreaControllerRoute(
@@ -99,26 +96,26 @@ app.MapAreaControllerRoute(
     name: "news",
     areaName: "News",
     pattern: "news",
-    defaults: new { controller = "News", Action = "Index" }
+    defaults: new { controller = "Home", Action = "Index" }
 );
 
 app.MapAreaControllerRoute(
     name: "posts",
     areaName: "Post",
     pattern: "post/{id?}",
-    defaults: new { controller = "Post", Action = "Index" }
+    defaults: new { controller = "Home", Action = "Index" }
 );
 
 app.MapAreaControllerRoute(
     name: "catalog",
     areaName: "Catalog",
     pattern: "/catalog/{id?}",
-    defaults: new { controller = "Catalog", Action = "Index" }
+    defaults: new { controller = "Home", Action = "Index" }
 );
 
 app.MapAreaControllerRoute(
-    name: "home",
-    areaName: "Home",
+    name: "index",
+    areaName: "Index",
     pattern: "/",
     defaults: new { controller = "Home", Action = "Index" }
 );

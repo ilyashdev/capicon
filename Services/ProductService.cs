@@ -1,41 +1,48 @@
-using capicon_backend.Database;
-using capicon_backend.Models.Catalog;
+using capicon.Models;
+using DataAccess;
 using Microsoft.EntityFrameworkCore;
-
-namespace capicon_backend.Services;
-
-public class ProductService(CapiconDBContext context)
+using capicon.Settings;
+public class ProductService
 {
-    public async Task CreateProduct(ProductModel product)
+    private readonly CSDbContext _context;
+
+    public ProductService(CSDbContext context)
     {
-        context.Products.Add(product);
-        await context.SaveChangesAsync();
+        _context = context;
     }
 
-    public async Task DeleteProduct(int id)
+    public async Task CreateProduct(ProductViewModel? product)
     {
-        var res = await context.Products.FirstOrDefaultAsync(p => p.Id == id);
-        if (res == null) return;
-        context.Products.Remove(res);
-        await context.SaveChangesAsync();
+        _context.Products.Add(product);
+        await _context.SaveChangesAsync();
     }
 
-    public async Task<List<ProductModel>> SearchProducts(string query, int skip, int take) =>
-        await context.Products
-            .Where(p => p.Title.Contains(query) || 
-                        p.Description1.Contains(query) || 
-                        p.Description2.Contains(query))
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
-
-    public async Task<ProductModel?> GetProduct(int id) =>
-        await context.Products
-            .FirstOrDefaultAsync(p => p.Id == id);
-
-    public async Task UpdateProduct(ProductModel product)
+    public async Task DeleteProduct(ProductViewModel? product)
     {
-        context.Products.Update(product);
-        await context.SaveChangesAsync();
+        _context.Products.Remove(product);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<ProductViewModel>> SearchProducts(string query, int page) =>
+      await _context.Products
+        .Include(p => p.Specifications)
+        .Include(p => p.Details)
+        .Where(p => p.Title.Contains(query) || 
+                    p.Description1.Contains(query) || 
+                    p.Description2.Contains(query))
+        .Skip(page * PageSettings.PAGE_SIZE)
+        .Take(PageSettings.PAGE_SIZE)
+        .ToListAsync();
+
+    public async Task<ProductViewModel?> GetProduct(int id, int page) =>
+      await _context.Products
+        .Include(p => p.Specifications)
+        .Include(p => p.Details)
+        .FirstOrDefaultAsync(p => p.Id == id);
+
+    public async Task UpdateProduct(ProductViewModel? product)
+    {
+        _context.Products.Update(product);
+        await _context.SaveChangesAsync();
     }
 }

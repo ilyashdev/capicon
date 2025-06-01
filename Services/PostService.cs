@@ -1,32 +1,41 @@
-using capicon_backend.Database;
-using capicon_backend.Models;
+using capicon.Models;
+using capicon.Settings;
+using DataAccess;
 using Microsoft.EntityFrameworkCore;
 
-namespace capicon_backend.Services;
+namespace capicon.Services;
 
-public class PostService(CapiconDBContext context)
+public class PostService(CSDbContext context)
 {
-    public async Task CreatePostAsync(NewsPostModel model)
+    public async Task CreatePost(PostModel? product)
     {
-        context.AddAsync(model);
+        context.News.Add(product);
         await context.SaveChangesAsync();
     }
 
-    public async Task<List<NewsPostModel>> SearchPostsAsync(string? query, int skip, int take) =>
-        await context.News.Where(p => p.Title.Contains(query))
-            .Skip(skip)
-            .Take(take)
+    public async Task<List<PostModel>> SearchPosts(string? query, int page)
+        => await context.News
+            .Where(p => p.Title.Contains(query))
+            .Skip(page * PageSettings.PAGE_SIZE)
+            .Take(PageSettings.PAGE_SIZE)
             .ToListAsync();
-    
-    public async Task<NewsPostModel?> GetPost(int id) =>
+
+    public async Task<int> getPageCount()
+    {
+        var pages = await context.News.CountAsync();
+        return pages / PageSettings.PAGE_SIZE;
+    }
+
+    public async Task<PostModel?> GetPost(int id) =>
         await context.News
             .FirstOrDefaultAsync(p => p.Id == id);
-    
-    public async Task UpdatePost(NewsPostModel product)
+
+    public async Task UpdatePost(PostModel? product)
     {
         context.News.Update(product);
         await context.SaveChangesAsync();
     }
+
     public async Task DeletePost(int id)
     {
         var post = await context.News.FindAsync(id);

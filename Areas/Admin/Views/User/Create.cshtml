@@ -1,6 +1,5 @@
-@using capicon_backend.Models.User;
-@model UserModifyFieldModel;
-
+@using capicon.Models;
+@model UserSetFieldModel
 @{
     ViewData["Title"] = "Добавить пользователя";
 }
@@ -9,7 +8,7 @@
 
 <div asp-validation-summary="All" class="text-danger"></div>
 
-<form asp-action="Create" method="post">
+<form asp-action="Add" method="post">
     <input type="hidden" asp-for="Id" />
     
     <div class="mb-3">
@@ -19,9 +18,9 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="Username" class="form-label">Имя пользователя</label>
-        <input asp-for="Username" class="form-control" />
-        <span asp-validation-for="Username" class="text-danger"></span>
+        <label asp-for="UserName" class="form-label">Имя пользователя</label>
+        <input asp-for="UserName" class="form-control" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
     </div>
 
     <div class="mb-3">

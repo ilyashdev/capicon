@@ -1,135 +1,124 @@
+using System.Collections.Immutable;
+using capicon.Models;
 using Microsoft.AspNetCore.Identity;
-using capicon_backend.Models.User;
 using Microsoft.EntityFrameworkCore;
 
-namespace capicon_backend.Services;
+namespace capicon.Services;
 
-public class AccountService(
-    RoleManager<IdentityRole> roleManager,
-    SignInManager<IdentityUser> signInManager,
-    UserManager<IdentityUser> userManager)
+public class AccountService
 {
-    public async Task<IdentityResult> CreateUserAsync(UserModifyFieldModel userData)
+    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly SignInManager<IdentityUser> _signInManager;
+
+    public AccountService(RoleManager<IdentityRole> roleManager, SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
     {
-        var user = new IdentityUser
-        {
-            Email = userData.Email,
-            UserName = userData.Username
-        };
-
-        var result = await userManager.CreateAsync(user, userData.Password);
-        if (!result.Succeeded)
-            return result;
-
-        if (await roleManager.RoleExistsAsync(userData.Role))
-            await userManager.AddToRoleAsync(user, userData.Role);
-
-        return IdentityResult.Success;
+        _signInManager = signInManager;
+        _roleManager = roleManager;
+        _userManager = userManager;
     }
 
-    public async Task<IdentityResult> ModifyUserAsync(UserModifyFieldModel model)
+    public async Task<List<UserDisplayFieldModel>> GetAllUsersAsync()
     {
-        var user = await userManager.FindByIdAsync(model.Id!);
-        if (user == null)
-            return IdentityResult.Failed(new IdentityError { Description = "Пользователь не найден." });
-
-        user.Email = model.Email;
-        user.UserName = model.Username;
-
-        var updateResult = await userManager.UpdateAsync(user);
-        if (!updateResult.Succeeded)
-            return updateResult;
-
-        // TODO: Возможно нужна правильная валидация результата?
-        if (!string.IsNullOrWhiteSpace(model.Password))
-        {
-            var removePasswordResult = await userManager.RemovePasswordAsync(user);
-            if (!removePasswordResult.Succeeded)
-                return removePasswordResult;
-
-            var addPasswordResult = await userManager.AddPasswordAsync(user, model.Password);
-            if (!addPasswordResult.Succeeded)
-                return addPasswordResult;
-        }
-
-        if (!await roleManager.RoleExistsAsync(model.Role)) return IdentityResult.Success;
-
-        var currentRoles = await userManager.GetRolesAsync(user);
-        await userManager.RemoveFromRolesAsync(user, currentRoles);
-        await userManager.AddToRoleAsync(user, model.Role);
-
-        return IdentityResult.Success;
-    }
-
-    public async Task<IdentityResult> DeleteUserAsync(string id)
-    {
-        var user = await userManager.FindByIdAsync(id);
-        if (user == null)
-            return IdentityResult.Failed(new IdentityError { Description = "Пользователь не найден." });
-        return await userManager.DeleteAsync(user);
-    }
-
-    public async Task<IdentityResult> AuthorizeUserAsync(UserAuthModel model)
-    {
-        var user = await userManager.FindByEmailAsync(model.Email);
-        if (user == null)
-            return IdentityResult.Failed(new IdentityError { Description = "Неверный Email или пароль." });
-
-        var result = await signInManager.PasswordSignInAsync(user.UserName!, model.Password, false, false);
-
-        return result.Succeeded
-            ? IdentityResult.Success
-            : IdentityResult.Failed(new IdentityError { Description = "Неверный Email или пароль." });
-    }
-
-    public async Task<List<UserViewModel>> SearchUsersAsync(string? query, int skip, int take)
-    {
-        var users = await userManager.Users
-            .Where(u => query == null ||
-                        u.UserName.Contains(query) ||
-                        u.Email.Contains(query))
-            .Skip(skip)
-            .Take(take)
-            .ToListAsync();
-
-        var userViewModels = new List<UserViewModel>();
+        var users = _userManager.Users.ToList();
+        var result = new List<UserDisplayFieldModel>();
 
         foreach (var user in users)
         {
-            var roles = await userManager.GetRolesAsync(user);
-
-            userViewModels.Add(new UserViewModel
+            var roles = await _userManager.GetRolesAsync(user);
+            result.Add(new UserDisplayFieldModel
             {
                 Id = user.Id,
-                Email = user.Email,
-                Username = user.UserName,
-                Role = roles[0]
+                Email = user.Email!,
+                UserName = user.UserName!,
+                Roles = roles
             });
         }
 
-        return userViewModels;
+        return result;
     }
 
-    public async Task<UserViewModel?> GetUserByIdAsync(string id)
+    public async Task<List<string?>> GetAllRolesAsync()
     {
-        var user = await userManager.FindByIdAsync(id);
+        return await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+    }
+
+    public async Task<UserDisplayFieldModel?> GetUserByIdAsync(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
         if (user == null) return null;
 
-        var roles = await userManager.GetRolesAsync(user);
+        var roles = await _userManager.GetRolesAsync(user);
 
-        return new UserViewModel
+        return new UserDisplayFieldModel
         {
             Id = user.Id,
-            Email = user.Email,
-            Username = user.UserName,
-            Role = roles[0]
+            Email = user.Email!,
+            UserName = user.UserName!,
+            Roles = roles
         };
     }
 
-    public async Task<List<string>> GetSystemRolesAsync() => await roleManager.Roles.Select(r => r.Name).ToListAsync();
+    public async Task<IdentityResult> AddUserAsync(UserSetFieldModel model)
+    {
+        var user = new IdentityUser
+        {
+            Email = model.Email,
+            UserName = model.UserName,
+        };
+
+        var result = await _userManager.CreateAsync(user, model.Password);
+        if (!result.Succeeded)
+            return result;
+
+        if (await _roleManager.RoleExistsAsync(model.Role))
+            await _userManager.AddToRoleAsync(user, model.Role);
+
+        return IdentityResult.Success;
+    }
+
+    public async Task<IdentityResult> RemoveUserAsync(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+            return IdentityResult.Failed(new IdentityError { Description = "User not found" });
+
+        return await _userManager.DeleteAsync(user);
+    }
+
+    public async Task<IdentityResult> ModifyUserAsync(UserSetFieldModel model)
+    {
+        var user = await _userManager.FindByIdAsync(model.Id!);
+        if (user == null)
+            return IdentityResult.Failed(new IdentityError { Description = "User not found" });
+
+        user.Email = model.Email;
+        user.UserName = model.UserName;
+
+        var updateResult = await _userManager.UpdateAsync(user);
+        if (!updateResult.Succeeded)
+            return updateResult;
+
+        var currentRoles = await _userManager.GetRolesAsync(user);
+        await _userManager.RemoveFromRolesAsync(user, currentRoles);
+
+        if (await _roleManager.RoleExistsAsync(model.Role))
+            await _userManager.AddToRoleAsync(user, model.Role);
+
+        return IdentityResult.Success;
+    }
+
+    public async Task<bool> SignInAsync(string email, string password)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null) return false;
+
+        var result = await _signInManager.PasswordSignInAsync(user.UserName!, password, false, false);
+        return result.Succeeded;
+    }
 
     public async Task SignOutAsync()
     {
-        await signInManager.SignOutAsync();
+        await _signInManager.SignOutAsync();
     }
 }

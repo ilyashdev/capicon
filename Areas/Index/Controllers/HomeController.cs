@@ -1,18 +1,12 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using capicon_backend.Models.View;
+using capicon.Models;
 
-namespace capicon_backend.Areas.Home.Controllers;
-
-[Area("Home")]
-public class HomeController : Controller
+namespace capicon.Areas.Index.Controllers;
+[Area("Index")]
+public class HomeController(ILogger<HomeController> logger) : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
+    private readonly ILogger<HomeController> _logger = logger;
 
     public IActionResult Index()
     {

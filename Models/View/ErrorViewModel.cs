@@ -1,7 +1,8 @@
-namespace capicon_backend.Models.View;
+namespace capicon.Models;
 
 public class ErrorViewModel
 {
-    public string? RequestId { get; init; }
-    public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);    
+    public string? RequestId { get; set; }
+
+    public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 }
