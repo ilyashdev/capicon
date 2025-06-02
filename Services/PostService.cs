@@ -26,6 +26,9 @@ public class PostService(CSDbContext context)
         return pages / PageSettings.PAGE_SIZE;
     }
 
+    public async Task<int> GetCount() 
+        => await context.News.CountAsync();
+
     public async Task<PostModel?> GetPost(int id) =>
         await context.News
             .FirstOrDefaultAsync(p => p.Id == id);

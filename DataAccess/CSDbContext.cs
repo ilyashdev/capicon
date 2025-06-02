@@ -43,12 +43,6 @@ public class CSDbContext : IdentityDbContext
         });
         modelBuilder.Entity<ProductViewModel>()
             .HasMany(p => p.Specifications)
-            .WithOne()
-            .HasForeignKey("ProductId");
-
-        modelBuilder.Entity<ProductViewModel>()
-            .HasOne(p => p.Specifications)
-            .WithOne()
-            .HasForeignKey<ProductSpecification>(d => d.Id);
+            .WithOne(s => s.Product);
     }
 }

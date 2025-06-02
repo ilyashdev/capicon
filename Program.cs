@@ -28,6 +28,7 @@ services.AddDbContext<CSDbContext>(options =>
 services.AddScoped<AccountService>();
 services.AddScoped<ProductService>();
 services.AddScoped<PostService>();
+services.AddScoped<ImageService>();
 
 var app = builder.Build();
 

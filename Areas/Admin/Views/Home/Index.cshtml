@@ -1,7 +1,86 @@
+@model capicon.Areas.Admin.Controllers.DashboardViewModel
 @{
-    ViewData["Title"] = "Панель";
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_AdminLayout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Панель..!</h1>
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Администрирование</h1>
+    
+    <div class="row mt-4">
+        <!-- Карточка товаров -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Товары
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @Model.ProductCount
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-box fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                    <a asp-area="Admin" asp-controller="Catalog" asp-action="Index" 
+                       class="btn btn-primary mt-3">
+                        Управление
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка постов -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Посты
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @Model.PostCount
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-newspaper fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                    <a asp-area="Admin" asp-controller="Post" asp-action="Index" 
+                       class="btn btn-success mt-3">
+                        Управление
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка пользователей -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Пользователи
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @Model.UserCount
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                    <a asp-area="Admin" asp-controller="User" asp-action="Index" 
+                       class="btn btn-info mt-3">
+                        Управление
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

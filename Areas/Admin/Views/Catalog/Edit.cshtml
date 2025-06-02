@@ -1,89 +1,123 @@
 @model capicon.Models.ProductViewModel
 @{
-    ViewBag.Title = "Edit Product";
+    ViewData["Title"] = "Редактировать продукт";
+    Layout = "_AdminLayout";
 }
 
-<h2>Edit Product</h2>
+<h2>@ViewData["Title"]</h2>
 
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" enctype="multipart/form-data">
     <input type="hidden" asp-for="Id" />
-    <div>
-        <label>Title</label>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    
+    <div class="form-group">
+        <label asp-for="Title" class="control-label"></label>
         <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
     </div>
-    <div>
-        <label>Subtitle</label>
+    
+    <div class="form-group">
+        <label asp-for="Subtitle" class="control-label"></label>
         <input asp-for="Subtitle" class="form-control" />
+        <span asp-validation-for="Subtitle" class="text-danger"></span>
     </div>
-    <div>
-        <label>Main Image</label>
-        <input asp-for="MainImage" class="form-control" />
-    </div>
-    <div>
-        <label>Description1</label>
-        <textarea asp-for="Description1" class="form-control"></textarea>
-    </div>
-    <div>
-        <label>Description2</label>
-        <textarea asp-for="Description2" class="form-control"></textarea>
-    </div>
-    <div>
-        <label>Usage</label>
-        <textarea asp-for="Usage" class="form-control"></textarea>
-    </div>
-    <div>
-        <label>Warning</label>
-        <textarea asp-for="Warning" class="form-control"></textarea>
-    </div>
-
-    <h4>Specifications</h4>
-    <div id="specifications">
-@for (int i = 0; i < (Model.Specifications?.Count ?? 0); i++)
-{
-    <div class="spec-item mb-2 p-2 border">
-        <input type="hidden" name="Specifications[@i].Id" value="@Model.Specifications[i].Id" />
-        <div>
-            <label>Text</label>
-            <input name="Specifications[@i].Text" value="@Model.Specifications[i].Text" class="form-control" />
+    
+    @if (!string.IsNullOrEmpty(Model.MainImage))
+    {
+        <div class="form-group">
+            <label>Текущее изображение:</label>
+            <img src="~/@Model.MainImage" class="img-thumbnail" style="max-height: 200px;" />
         </div>
-        <div>
-            <label>Amount</label>
-            <input name="Specifications[@i].Amount" value="@Model.Specifications[i].Amount" type="number" class="form-control" />
+    }
+    
+    <div class="form-group">
+        <label asp-for="ImageFile" class="control-label"></label>
+        <input asp-for="ImageFile" type="file" class="form-control-file" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="Description1" class="control-label"></label>
+        <textarea asp-for="Description1" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description1" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="Description2" class="control-label"></label>
+        <textarea asp-for="Description2" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description2" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <h5>Спецификации</h5>
+        <div id="specifications-container">
+            @for (var i = 0; i < Model.Specifications.Count; i++)
+            {
+                <div class="specification-row mb-2">
+                    <div class="row">
+                        <input type="hidden" asp-for="Specifications[i].Id" />
+                        <div class="col-md-6">
+                            <input asp-for="Specifications[i].Text" class="form-control" placeholder="Текст спецификации" />
+                        </div>
+                        <div class="col-md-4">
+                            <input asp-for="Specifications[i].Amount" type="number" class="form-control" placeholder="Количество" />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger remove-specification">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
-        <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeSpec(this)">Remove</button>
+        <button type="button" id="add-specification" class="btn btn-secondary mt-2">
+            <i class="fas fa-plus"></i> Добавить спецификацию
+        </button>
     </div>
-}
+    
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Сохранить
+        </button>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-undo"></i> Отмена
+        </a>
     </div>
-
-    <button type="button" class="btn btn-secondary mt-2" onclick="addSpec()">Add Specification</button>
-    <br /><br />
-    <button type="submit" class="btn btn-primary">Save</button>
 </form>
 
 @section Scripts {
-<script>
-    let specIndex = @Model.Specifications?.Count ?? 0;
-
-    function addSpec() {
-        const container = document.getElementById('specifications');
-        const html = `
-<div class="spec-item mb-2 p-2 border">
-    <div>
-        <label>Text</label>
-        <input name="Specifications[${specIndex}].Text" class="form-control" />
-    </div>
-    <div>
-        <label>Amount</label>
-        <input name="Specifications[${specIndex}].Amount" type="number" class="form-control" />
-    </div>
-    <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeSpec(this)">Remove</button>
-</div>`;
-        container.insertAdjacentHTML('beforeend', html);
-        specIndex++;
-    }
-
-    function removeSpec(button) {
-        button.closest('.spec-item').remove();
-    }
-</script>
+    <script>
+        $(document).ready(function() {
+            let specIndex = @Model.Specifications.Count;
+            
+            // Добавление новой спецификации
+            $('#add-specification').click(function() {
+                const newRow = `
+                    <div class="specification-row mb-2">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input name="Specifications[${specIndex}].Text" class="form-control" placeholder="Текст спецификации" />
+                            </div>
+                            <div class="col-md-4">
+                                <input name="Specifications[${specIndex}].Amount" type="number" class="form-control" placeholder="Количество" />
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger remove-specification">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                $('#specifications-container').append(newRow);
+                specIndex++;
+            });
+            
+            // Удаление спецификации
+            $(document).on('click', '.remove-specification', function() {
+                $(this).closest('.specification-row').remove();
+            });
+        });
+    </script>
 }

@@ -15,7 +15,7 @@ public class LoginController(AccountService accountService) : Controller
     {
         var success = await accountService.SignInAsync(model.Email, model.Password);
         if (success)
-            return RedirectToAction("Index", "Catalog");
+            return RedirectToAction(nameof(Index));
 
         ModelState.AddModelError("", "Неверный логин или пароль.");
         return View();

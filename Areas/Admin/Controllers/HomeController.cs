@@ -1,17 +1,44 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using capicon.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
-using capicon.Areas.Admin.Models;
 namespace capicon.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class HomeController : Controller {
-    [HttpGet]
-    public IActionResult Index()
+public class HomeController : Controller
+{
+    private readonly ProductService _productService;
+    private readonly PostService _postService;
+    private readonly AccountService _accountService;
+
+    public HomeController(
+        ProductService productService,
+        PostService postService,
+        AccountService accountService)
     {
-        return View();
+        _productService = productService;
+        _postService = postService;
+        _accountService = accountService;
     }
+
+    public async Task<IActionResult> Index()
+    {
+
+        var model = new DashboardViewModel
+        {
+            ProductCount = await _productService.GetCount(),
+            PostCount = await _postService.GetCount(),
+            UserCount = await _accountService.GetUserCount()
+        };
+
+        return View(model);
+    }
+}
+
+public class DashboardViewModel
+{
+    public int ProductCount { get; set; }
+    public int PostCount { get; set; }
+    public int UserCount { get; set; }
 }

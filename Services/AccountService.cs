@@ -58,6 +58,9 @@ public class AccountService
             Roles = roles
         };
     }
+    
+    public async Task<int> GetUserCount()
+        => _userManager.Users.Count();
 
     public async Task<IdentityResult> AddUserAsync(UserSetFieldModel model)
     {
