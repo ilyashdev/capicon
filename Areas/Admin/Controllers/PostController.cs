@@ -17,13 +17,13 @@ public class PostController(PostService postService) : Controller
     }
 
     [HttpGet]
-    public IActionResult Add()
+    public IActionResult Create()
     {
         return View();
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add(PostModel model)
+    public async Task<IActionResult> Create(PostModel model)
     {
         await postService.CreatePost(model);
         return RedirectToAction(nameof(Index));

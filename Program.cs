@@ -111,7 +111,7 @@ app.MapAreaControllerRoute(
 app.MapAreaControllerRoute(
     name: "catalog",
     areaName: "Catalog",
-    pattern: "/catalog/{id?}",
+    pattern: "catalog",
     defaults: new { controller = "Home", Action = "Index" }
 );
 
