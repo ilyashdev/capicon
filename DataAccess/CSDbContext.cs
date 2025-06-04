@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using capicon.Models;
+using capicon.Models.Visitors;
 using Microsoft.EntityFrameworkCore.ChangeTracking; 
 
 namespace DataAccess;
@@ -19,7 +20,7 @@ public class CSDbContext : IdentityDbContext
     public DbSet<PostModel> News { get; set; } = null!;
     public DbSet<ProductViewModel?> Products { get; set; } = null!;
     public DbSet<ProductSpecification> Specifications { get; set; } = null!;
-
+    public DbSet<DailyVisitors> DailyVisitors { get; set; } = null!;
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder

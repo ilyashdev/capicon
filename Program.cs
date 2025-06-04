@@ -1,5 +1,6 @@
-using capicon.Services;
+using capicon.ApiExtentions;
 using DataAccess;
+using DataAccess.Init;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,55 +26,12 @@ services.AddIdentity<IdentityUser, IdentityRole>()
 services.AddDbContext<CSDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DataBase")));
 
-services.AddScoped<AccountService>();
-services.AddScoped<ProductService>();
-services.AddScoped<PostService>();
-services.AddScoped<ImageService>();
+services.AddScopedService();
+services.AddTransientServices();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<CSDbContext>();
-    await db.Database.MigrateAsync();
-
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-
-    if (!userManager.Users.Any())
-    {
-        var roleNames = new[] { "Admin", "Editor", "Analytics" };
-
-        foreach (var roleName in roleNames)
-        {
-            if (!await roleManager.RoleExistsAsync(roleName))
-                await roleManager.CreateAsync(new IdentityRole(roleName));
-        }
-
-        var password = "Admin123!";
-        var admin = new IdentityUser
-        {
-            UserName = "admin",
-            Email = "admin@example.com",
-            EmailConfirmed = true
-        };
-
-        var result = await userManager.CreateAsync(admin, password);
-
-
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(admin, "Admin");
-            Console.WriteLine($"Админ создан: {admin.UserName}/{admin.Email}/{password}");
-        }
-        else
-        {
-            Console.WriteLine("Ошибка при создании администратора:");
-            foreach (var error in result.Errors)
-                Console.WriteLine($"- {error.Description}");
-        }
-    }
-}
+await DbSetup.InitAdmin(app);
 
 if (!app.Environment.IsDevelopment())
 {
@@ -85,41 +43,9 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.AddMiddlewares();
 app.MapStaticAssets();
-
-app.MapAreaControllerRoute(
-    name: "admin",
-    areaName: "Admin",
-    pattern: "admin/{controller=Home}/{action=Index}/{id?}"
-);
-
-app.MapAreaControllerRoute(
-    name: "news",
-    areaName: "News",
-    pattern: "news",
-    defaults: new { controller = "Home", Action = "Index" }
-);
-
-app.MapAreaControllerRoute(
-    name: "posts",
-    areaName: "Post",
-    pattern: "post/{id?}",
-    defaults: new { controller = "Home", Action = "Index" }
-);
-
-app.MapAreaControllerRoute(
-    name: "catalog",
-    areaName: "Catalog",
-    pattern: "catalog",
-    defaults: new { controller = "Home", Action = "Index" }
-);
-
-app.MapAreaControllerRoute(
-    name: "index",
-    areaName: "Index",
-    pattern: "/",
-    defaults: new { controller = "Home", Action = "Index" }
-);
+app.AddAreas();
 
 app.Run();
+
