@@ -2,9 +2,9 @@
 
 namespace capicon.Middlewares;
 
-public class VisitorMiddleware(RequestDelegate next, VisitorService visitorService)
+public class VisitorMiddleware(RequestDelegate next)
 {
-    public async Task Invoke(HttpContext context)
+    public async Task Invoke(HttpContext context, VisitorService visitorService)
     {
         var dailyToken = context.Request.Cookies["SsTk"];
         if (dailyToken == null)
