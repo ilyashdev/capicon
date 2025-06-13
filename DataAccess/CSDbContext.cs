@@ -1,7 +1,10 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using capicon.Models;
+using capicon.Models.Visitors;
+using Microsoft.EntityFrameworkCore.ChangeTracking; 
 
 namespace DataAccess;
 
@@ -15,7 +18,9 @@ public class CSDbContext : IdentityDbContext
     }
 
     public DbSet<PostModel> News { get; set; } = null!;
-
+    public DbSet<ProductViewModel?> Products { get; set; } = null!;
+    public DbSet<ProductSpecification> Specifications { get; set; } = null!;
+    public DbSet<DailyVisitors> DailyVisitors { get; set; } = null!;
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder
@@ -30,21 +35,15 @@ public class CSDbContext : IdentityDbContext
         {
             entity.HasKey(x => new { x.LoginProvider, x.ProviderKey });
         });
-        modelBuilder.Entity<IdentityUserClaim<string>>(entity =>
-        {
-            entity.HasKey(x => x.Id);
-        });
-        modelBuilder.Entity<IdentityUserRole<string>>(entity =>
-        {
-            entity.HasKey(x => new { x.UserId, x.RoleId });
-        });
-        modelBuilder.Entity<IdentityRoleClaim<string>>(entity =>
-        {
-            entity.HasKey(x => x.Id);
-        });
+        modelBuilder.Entity<IdentityUserClaim<string>>(entity => { entity.HasKey(x => x.Id); });
+        modelBuilder.Entity<IdentityUserRole<string>>(entity => { entity.HasKey(x => new { x.UserId, x.RoleId }); });
+        modelBuilder.Entity<IdentityRoleClaim<string>>(entity => { entity.HasKey(x => x.Id); });
         modelBuilder.Entity<IdentityUserToken<string>>(entity =>
         {
             entity.HasKey(x => new { x.UserId, x.LoginProvider, x.Name });
         });
+        modelBuilder.Entity<ProductViewModel>()
+            .HasMany(p => p.Specifications)
+            .WithOne(s => s.Product);
     }
 }

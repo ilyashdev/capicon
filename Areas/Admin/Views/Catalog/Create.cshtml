@@ -1,0 +1,129 @@
+@model capicon.Models.ProductViewModel
+@{
+    ViewData["Title"] = "Создать продукт";
+    Layout = "_AdminLayout";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    
+    <div class="form-group">
+        <label asp-for="Title" class="control-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="Subtitle" class="control-label"></label>
+        <input asp-for="Subtitle" class="form-control" />
+        <span asp-validation-for="Subtitle" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="ImageFile" class="control-label"></label>
+        <input asp-for="ImageFile" type="file" class="form-control-file" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="Description1" class="control-label"></label>
+        <textarea asp-for="Description1" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description1" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="Description2" class="control-label"></label>
+        <textarea asp-for="Description2" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description2" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group mt-3">
+        <h5>Спецификации</h5>
+        <div id="specifications-container">
+            @for (var i = 0; i < Model.Specifications.Count; i++)
+            {
+                <div class="specification-row mb-2">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input asp-for="Specifications[i].Text" class="form-control" placeholder="Текст спецификации" />
+                        </div>
+                        <div class="col-md-4">
+                            <input asp-for="Specifications[i].Amount" type="number" class="form-control" placeholder="Количество" />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger remove-specification">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <button type="button" id="add-specification" class="btn btn-secondary mt-2">
+            <i class="fas fa-plus"></i> Добавить спецификацию
+        </button>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Создать
+        </button>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-undo"></i> Отмена
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="/lib/jquery/dist/jquery.js"></script>
+
+    <script>
+        $(function () {
+            let specIndex = @Model.Specifications?.Count ?? 0;
+
+            // Добавление новой спецификации
+            $('#add-specification').on('click', function () {
+                const newRow = $(`
+                    <div class="specification-row mb-2">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input name="Specifications[${specIndex}].Text" class="form-control" placeholder="Текст спецификации" />
+                            </div>
+                            <div class="col-md-4">
+                                <input name="Specifications[${specIndex}].Amount" type="number" class="form-control" placeholder="Количество" />
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger remove-specification">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                $('#specifications-container').append(newRow);
+                specIndex++;
+            });
+
+            // Удаление спецификации
+            $(document).on('click', '.remove-specification', function () {
+                $(this).closest('.specification-row').remove();
+                reindexSpecifications();
+            });
+
+            // Переиндексация
+            function reindexSpecifications() {
+                $('#specifications-container .specification-row').each(function (index) {
+                    $(this).find('input').each(function () {
+                        const name = $(this).attr('name');
+                        if (name) {
+                            const newName = name.replace(/Specifications\[\d+\]/, `Specifications[${index}]`);
+                            $(this).attr('name', newName);
+                        }
+                    });
+                });
+                specIndex = $('#specifications-container .specification-row').length;
+            }
+        });
+    </script>
+}

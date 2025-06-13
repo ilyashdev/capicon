@@ -1,0 +1,19 @@
+@using capicon.Models;
+@model UserDisplayFieldModel
+@{
+    ViewData["Title"] = "Информация о пользователе";
+    Layout = "_AdminLayout";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="card">
+    <div class="card-body">
+        <p><strong>Id:</strong> @Model.Id</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Имя пользователя:</strong> @Model.UserName</p>
+        <p><strong>Роль:</strong> @string.Join(", ", Model.Roles)</p>
+    </div>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Назад</a>

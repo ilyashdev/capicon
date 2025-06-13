@@ -1,0 +1,17 @@
+@using capicon.Models
+@model List<PostModel>
+@{
+    ViewData["Title"] = "News";
+}
+
+<div class="text-center">
+    <h1 class="display-4">News</h1>
+    @foreach (PostModel news in Model)
+    {
+        <li>
+            <a asp-area="Post" asp-controller="Catalog" asp-action="Index" asp-route-id="@news.Id">
+                @news.Title
+            </a>
+        </li>
+    }
+</div>

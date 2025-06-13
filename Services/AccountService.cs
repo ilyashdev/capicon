@@ -1,5 +1,7 @@
+using System.Collections.Immutable;
 using capicon.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace capicon.Services;
 
@@ -16,15 +18,15 @@ public class AccountService
         _userManager = userManager;
     }
 
-    public async Task<List<UserShowModel>> GetAllUsersAsync()
+    public async Task<List<UserDisplayFieldModel>> GetAllUsersAsync()
     {
         var users = _userManager.Users.ToList();
-        var result = new List<UserShowModel>();
+        var result = new List<UserDisplayFieldModel>();
 
         foreach (var user in users)
         {
             var roles = await _userManager.GetRolesAsync(user);
-            result.Add(new UserShowModel
+            result.Add(new UserDisplayFieldModel
             {
                 Id = user.Id,
                 Email = user.Email!,
@@ -36,19 +38,19 @@ public class AccountService
         return result;
     }
 
-    public List<string> GetAllRoles()
+    public async Task<List<string?>> GetAllRolesAsync()
     {
-        return _roleManager.Roles.Select(r => r.Name).ToList()!;
+        return await _roleManager.Roles.Select(r => r.Name).ToListAsync();
     }
 
-    public async Task<UserShowModel?> GetUserByIdAsync(string id)
+    public async Task<UserDisplayFieldModel?> GetUserByIdAsync(string id)
     {
         var user = await _userManager.FindByIdAsync(id);
         if (user == null) return null;
 
         var roles = await _userManager.GetRolesAsync(user);
 
-        return new UserShowModel
+        return new UserDisplayFieldModel
         {
             Id = user.Id,
             Email = user.Email!,
@@ -56,13 +58,16 @@ public class AccountService
             Roles = roles
         };
     }
+    
+    public async Task<int> GetUserCount()
+        => _userManager.Users.Count();
 
-    public async Task<IdentityResult> AddUserAsync(CreateUserModel model)
+    public async Task<IdentityResult> AddUserAsync(UserSetFieldModel model)
     {
         var user = new IdentityUser
         {
             Email = model.Email,
-            UserName = model.UserName
+            UserName = model.UserName,
         };
 
         var result = await _userManager.CreateAsync(user, model.Password);
@@ -84,9 +89,9 @@ public class AccountService
         return await _userManager.DeleteAsync(user);
     }
 
-    public async Task<IdentityResult> ModifyUserAsync(ModifyUserModel model)
+    public async Task<IdentityResult> ModifyUserAsync(UserSetFieldModel model)
     {
-        var user = await _userManager.FindByIdAsync(model.Id);
+        var user = await _userManager.FindByIdAsync(model.Id!);
         if (user == null)
             return IdentityResult.Failed(new IdentityError { Description = "User not found" });
 
